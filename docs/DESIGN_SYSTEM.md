@@ -42,3 +42,16 @@ Editorial industrial architecture: near-black ink, warm paper, oxidized copper, 
 - No ROI, CPL, conversion uplift or client-result claims.
 - Demo projects are labelled as demonstrations.
 - Public page may link to GitHub and public demos; internal lead and CRM data stays local.
+
+
+## Interactive proof layer
+
+The homepage includes a signal console under the hero. It is intentionally a product demonstration rather than decorative motion:
+
+- five handoff nodes: Message, Landing, Diagnostic, Lead, Manager;
+- click-to-read state changes expose what context is preserved at each handoff;
+- route is keyboard reachable and remains usable on mobile;
+- reduced-motion mode removes transform transitions;
+- no commercial outcome is implied by the interaction.
+
+This section is the visual bridge between Phoenix Marketing's editorial brand and its core offer: making the customer path legible.
