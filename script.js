@@ -122,10 +122,19 @@
     const frame = document.querySelector('[data-demo-frame]');
     const loading = document.querySelector('[data-frame-loading]');
     const fallback = document.querySelector('[data-demo-fallback]');
-    frame.src = demo.siteUrl;
-    fallback.href = demo.siteUrl;
+    frame.removeAttribute('src');
+    fallback.removeAttribute('href');
+    fallback.hidden = true;
     loading.classList.remove('is-loaded');
-    frame.onload = () => loading.classList.add('is-loaded');
+    if (demo.siteUrl) {
+      frame.src = demo.siteUrl;
+      fallback.href = demo.fallbackUrl || demo.siteUrl;
+      fallback.hidden = false;
+      frame.onload = () => loading.classList.add('is-loaded');
+      loading.textContent = 'Загрузка демо-сайта…';
+    } else {
+      loading.textContent = 'Публичное демо ещё не опубликовано';
+    }
     openModal(demoModal, button);
   }));
 
