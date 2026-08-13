@@ -30,13 +30,15 @@
   const quizLead = document.querySelector('[data-quiz-lead]');
   let quizStep = 0;
   let quizAnswers = [];
+  let discountPercent = 0;
   let lastFocused = null;
+  const TELEGRAM_BOT_USERNAME = '';
 
   const questions = [
-    { key: 'situation', text: 'На каком этапе сейчас ваш бизнес?', options: ['Есть продукт, но системы привлечения ещё нет.', 'Готовимся запускать рекламу.', 'Реклама уже работает, но связка не собрана.', 'Есть заявки, но обработка ведётся вручную.', 'Пока проверяем готовность к системному привлечению.'] },
-    { key: 'assets', text: 'Что уже подготовлено для привлечения клиентов?', options: ['Понятный продукт и целевая аудитория', 'Сформулированный оффер', 'Рекламные креативы', 'Сайт или посадочная страница', 'CRM, таблица или Telegram для обработки', 'Пока почти ничего из этого'] },
-    { key: 'clarity', text: 'Что сейчас сложнее всего подготовить?', options: ['Понять, кому и что продавать', 'Сформулировать сильное обещание', 'Связать рекламу и сайт', 'Превратить интерес в тёплую заявку', 'Передать менеджеру контекст клиента', 'Определить правильный порядок запуска'] },
-    { key: 'first_step', text: 'Что было бы самым полезным первым шагом?', options: ['Получить карту всей связки', 'Подготовить запуск рекламы', 'Собрать сайт и диагностический маршрут', 'Настроить обработку лидов', 'Получить готовый пилот', 'Понять состав и порядок работ'] }
+    { key: 'situation', text: 'На каком этапе сейчас ваш бизнес?', expert: 'Если связки ещё нет, это нормально. Важно сначала определить порядок сборки, а уже потом вести на неё трафик.', options: ['Есть продукт, но системы привлечения ещё нет.', 'Готовимся запускать рекламу.', 'Реклама уже работает, но связка не собрана.', 'Есть заявки, но обработка ведётся вручную.', 'Пока проверяем готовность к системному привлечению.'] },
+    { key: 'assets', text: 'Что уже подготовлено для привлечения клиентов?', expert: 'Отдельный сайт или реклама ещё не образуют систему. Мы проверяем, какие элементы уже можно связать между собой.', options: ['Понятный продукт и целевая аудитория', 'Сформулированный оффер', 'Рекламные креативы', 'Сайт или посадочная страница', 'CRM, таблица или Telegram для обработки', 'Пока почти ничего из этого'] },
+    { key: 'clarity', text: 'Что сейчас сложнее всего подготовить?', expert: 'Этот ответ помогает определить первый рабочий контур, а не навязать вам весь объём работ сразу.', options: ['Понять, кому и что продавать', 'Сформулировать сильное обещание', 'Связать рекламу и сайт', 'Превратить интерес в тёплую заявку', 'Передать менеджеру контекст клиента', 'Определить правильный порядок запуска'] },
+    { key: 'first_step', text: 'Что было бы самым полезным первым шагом?', expert: 'Хорошая связка начинается с ясного первого шага. Результат подскажет, что собирать раньше всего.', options: ['Получить карту всей связки', 'Подготовить запуск рекламы', 'Собрать сайт и диагностический маршрут', 'Настроить обработку лидов', 'Получить готовый пилот', 'Понять состав и порядок работ'] }
   ];
 
   const demoFallback = {
@@ -62,6 +64,7 @@
     resetQuiz();
     openModal(quizModal, button);
   }));
+  document.querySelector('[data-start-quiz]').addEventListener('click', startQuiz);
   document.querySelectorAll('[data-close-modal]').forEach((button) => button.addEventListener('click', () => {
     closeModal(button.closest('.modal'));
   }));
@@ -81,13 +84,34 @@
   });
 
   function resetQuiz() {
-    quizStep = 0; quizAnswers = []; quizResult.hidden = true; quizLead.hidden = false; quizLead.textContent = 'Ответьте на четыре коротких вопроса. В конце вы получите ориентир, что стоит проверить первым.'; renderQuestion();
+    quizStep = 0;
+    quizAnswers = [];
+    discountPercent = 0;
+    quizResult.hidden = true;
+    document.querySelector('[data-quiz-start]').hidden = false;
+    document.querySelector('[data-quiz-flow]').hidden = true;
+    document.querySelector('[data-quiz-flow-title]').textContent = 'Проверьте готовность системы';
+    updateDiscount();
   }
+
+  function startQuiz() {
+    document.querySelector('[data-quiz-start]').hidden = true;
+    document.querySelector('[data-quiz-flow]').hidden = false;
+    quizStep = 0;
+    renderQuestion();
+  }
+
+  function updateDiscount() {
+    document.querySelector('[data-quiz-discount]').textContent = `Скидка: ${discountPercent.toString().replace('.', ',')}%`;
+    quizBar.style.width = `${Math.min(100, discountPercent * 10)}%`;
+  }
+
   function renderQuestion() {
     const current = questions[quizStep];
     quizProgress.textContent = `${quizStep + 1} / ${questions.length}`;
-    quizBar.style.width = `${((quizStep + 1) / questions.length) * 100}%`;
     quizQuestion.textContent = current.text;
+    quizLead.textContent = 'Выберите один вариант — следующий вопрос появится сразу.';
+    document.querySelector('[data-quiz-expert]').textContent = `Комментарий Дениса: ${current.expert}`;
     quizOptions.innerHTML = '';
     quizOptions.setAttribute('aria-label', current.text);
     const back = document.querySelector('[data-quiz-back]');
@@ -102,82 +126,48 @@
       if (quizAnswers[quizStep] === label) option.classList.add('is-selected');
       option.addEventListener('click', () => {
         quizAnswers[quizStep] = label;
+        discountPercent = Math.min(10, Number(((quizStep + 1) * 2.5).toFixed(1)));
+        updateDiscount();
         if (quizStep < questions.length - 1) { quizStep += 1; renderQuestion(); }
-        else showQuizResult();
+        else showContactStep();
       });
       quizOptions.appendChild(option);
     });
   }
-  function showQuizResult() {
-    const answers = quizAnswers.join(' ').toLowerCase();
-    const situation = (quizAnswers[0] || '').toLowerCase();
-    let segment = 'early_research';
-    let title = 'Собрать систему привлечения под вашу точку старта';
-    let copy = 'Начнём с исследования бизнеса, сегментов и оффера, затем свяжем креативы, сайт, диагностический маршрут и обработку лида.';
-    let product = 'Карта системы';
-    if (situation.includes('продукт') || situation.includes('запуск')) {
-      segment = 'pre_launch';
-      title = 'Сначала собрать систему запуска';
-      copy = 'До закупки трафика нужно связать аудиторию, обещание, креативы, сайт, диагностический маршрут и передачу заявки менеджеру.';
-      product = 'Карта системы → Пилотная связка';
-    } else if (situation.includes('реклама')) {
-      segment = 'fragmented_acquisition';
-      title = 'Собрать работающую связку вокруг рекламы';
-      copy = 'Реклама уже есть, но ей нужен единый маршрут: сообщение, сайт, диагностика, контекст лида и понятная обработка.';
-      product = 'Пилотная связка';
-    } else if (situation.includes('заявки') || situation.includes('вручную')) {
-      segment = 'owner_operator';
-      title = 'Передать менеджеру не пустой контакт, а контекст';
-      copy = 'Соберём lead object, правила обработки и канал передачи данных, чтобы заявки не терялись между формами, Telegram и таблицами.';
-      product = 'Операционный контур';
-    } else if (answers.includes('сайт') || answers.includes('обещание')) {
-      segment = 'launch_architect';
-      title = 'Собрать путь клиента до первого разговора';
-      copy = 'Следующий шаг — связать рекламное обещание, сайт и диагностический маршрут в одну понятную систему.';
-      product = 'Пилотная связка';
-    }
-    const checklist = [
-      'Сегменты, боли и мотивация аудитории',
-      'Оффер и рекламное обещание',
-      'Креативы под выбранные сегменты',
-      'Сайт и диагностический маршрут',
-      'Lead object и передача контекста менеджеру',
-      'Таблица, CRM или Telegram для обработки',
-      'Цели аналитики и smoke-test до запуска трафика'
-    ];
-    const steps = ['Исследование и стратегия', 'Креативы и сайт', 'Диагностический маршрут', 'Обработка лида и аналитика'];
-    const discount = getDiscountState();
-    quizProgress.textContent = 'Ваш план';
-    quizBar.style.width = '100%';
+
+  function showContactStep() {
+    quizProgress.textContent = 'Контакт';
+    document.querySelector('[data-quiz-expert]').textContent = '';
     quizQuestion.textContent = '';
     quizOptions.innerHTML = '';
     document.querySelector('[data-quiz-back]').hidden = true;
-    quizLead.hidden = true;
+    quizLead.textContent = 'Мы подготовили ваш персональный план. Выберите, куда его отправить.';
     quizResult.hidden = false;
-    quizResult.innerHTML = `<span class="result-kicker">ВАШ ПЛАН · ${segment}</span><h3>${title}</h3><p>${copy}</p><div class="solution-block"><strong>Что должно быть собрано</strong><ul>${checklist.map((item) => `<li>${item}</li>`).join('')}</ul><strong>Порядок действий</strong><ol>${steps.map((item) => `<li>${item}</li>`).join('')}</ol></div><div class="bonus-block"><strong>Два бонуса</strong><p>01 · Чек-лист готовности связки к запуску<br>02 · Шаблон пути лида от рекламы до менеджера</p></div><div class="discount-block"><strong>Накоплено ${discount.earned_percent}% скидки</strong><span>Можно накопить до 10% на работы Phoenix Marketing. Условия и срок действия фиксируются в предложении.</span></div><div class="result-meta"><strong>Рекомендуемый состав: ${product}</strong><span>Первый шаг: получить состав системы под ваши ответы.</span></div><button class="button primary" type="button" data-result-contact>Получить состав системы <span aria-hidden="true">↗</span></button><p class="result-note">Сначала покажем план и состав работ. Контакт нужен только для отправки результата.</p>`;
-    quizResult.querySelector('[data-result-contact]').addEventListener('click', () => showLeadForm({ segment, title, product, checklist, steps, discount }));
-  }
-
-  function getDiscountState() {
-    const key = 'phoenix_discount_state';
-    const state = JSON.parse(localStorage.getItem(key) || '{"earned_percent":0}');
-    const earned = Math.min(10, Math.max(2, Number(state.earned_percent) || 0));
-    localStorage.setItem(key, JSON.stringify({ earned_percent: earned, max_percent: 10 }));
-    return { earned_percent: earned, max_percent: 10, token: `phoenix-discount-${Date.now()}` };
-  }
-  function showLeadForm(result) {
-    quizResult.innerHTML = `<span class="result-kicker">СЛЕДУЮЩИЙ ШАГ</span><h3>Получить состав системы</h3><p>Оставьте контакт — подготовим короткий разбор под ваш результат диагностики.</p><form class="lead-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><label>Телефон или Telegram<input name="contact" autocomplete="tel" inputmode="tel" required></label><label>Ваша роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж"></label><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для ответа на запрос.</span></label><button class="button primary" type="submit">Получить разбор <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
+    quizResult.innerHTML = `<span class="result-kicker">ПЛАН ГОТОВ</span><h3>Куда отправить результаты?</h3><p>Результат, чек-лист и бонусы придут после сохранения контакта. Мы не звоним — отправляем материалы выбранным способом.</p><form class="lead-form delivery-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><label>Роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж"></label><fieldset><legend>Канал доставки</legend><label class="delivery-choice"><input type="radio" name="delivery" value="telegram" checked><span>Telegram</span></label><label class="delivery-choice"><input type="radio" name="delivery" value="email"><span>Email</span></label></fieldset><label>Email для отправки<input name="email" type="email" autocomplete="email" inputmode="email"></label><label>Телефон — необязательно<input name="phone" type="tel" autocomplete="tel" inputmode="tel"></label><p class="form-note">Телефон нужен только как дополнительный контакт. Мы не звоним.</p><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для отправки результата.</span></label><button class="button primary" type="submit">Получить результат в выбранном канале <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
     const form = quizResult.querySelector('[data-lead-form]');
+    const delivery = form.querySelectorAll('input[name="delivery"]');
+    const email = form.querySelector('input[name="email"]');
+    const syncEmail = () => { email.required = form.querySelector('input[name="delivery"]:checked').value === 'email'; };
+    delivery.forEach((radio) => radio.addEventListener('change', syncEmail));
+    syncEmail();
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
-      const lead = { lead_id: `phoenix-${Date.now()}`, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, result: { segment: result.segment, title: result.title, recommended_product: result.product, checklist: result.checklist, steps: result.steps }, discount: result.discount, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], name: data.name, contact: data.contact, role: data.role || null, status: 'new' };
+      const token = `phoenix-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+      const lead = { lead_id: token, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, name: data.name, role: data.role || null, delivery: data.delivery, email: data.email || null, phone: data.phone || null, consent: true, discount: { earned_percent: discountPercent, max_percent: 10, token }, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], status: 'pending_delivery' };
       const queue = JSON.parse(localStorage.getItem('phoenix_lead_queue') || '[]');
       queue.push(lead);
       localStorage.setItem('phoenix_lead_queue', JSON.stringify(queue));
-      form.innerHTML = '<div class="lead-confirmation"><strong>Разбор подготовлен в этом браузере.</strong><p>Канал передачи менеджеру ещё не подключён. Запись сохранена как демонстрационный lead object; после подключения endpoint она будет отправляться в CRM, таблицу или бота.</p><button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>';
-      form.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
+      showThankYou(lead);
     });
+  }
+
+  function showThankYou(lead) {
+    const channel = lead.delivery === 'telegram' ? 'Telegram' : 'email';
+    const botLink = lead.delivery === 'telegram' && TELEGRAM_BOT_USERNAME ? `<a class="button primary" href="https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(lead.lead_id)}" target="_blank" rel="noreferrer">Открыть Telegram и получить результат ↗</a>` : '';
+    const pending = lead.delivery === 'telegram' && !TELEGRAM_BOT_USERNAME ? '<p class="form-status">Telegram-бот ещё не подключён. Заявка сохранена со статусом ожидания доставки.</p>' : lead.delivery === 'email' ? '<p class="form-status">Email endpoint ещё не подключён. Заявка сохранена со статусом ожидания доставки.</p>' : '';
+    quizResult.innerHTML = `<div class="lead-confirmation"><span class="result-kicker">СПАСИБО</span><strong>Результаты подготовлены.</strong><p>Отправим их в ${channel}. Мы не будем звонить.</p><div class="thankyou-bonuses"><strong>После отправки вы получите:</strong><span>01 · Чек-лист готовности связки</span><span>02 · Шаблон пути лида</span><span>Накопленная скидка: ${lead.discount.earned_percent}%</span></div>${botLink}${pending}<button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>`;
+    quizResult.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
   }
 
   function getSourceData() {
