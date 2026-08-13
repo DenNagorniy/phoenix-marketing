@@ -55,3 +55,17 @@ The homepage includes a signal console under the hero. It is intentionally a pro
 - no commercial outcome is implied by the interaction.
 
 This section is the visual bridge between Phoenix Marketing's editorial brand and its core offer: making the customer path legible.
+
+
+## Strategy-first hierarchy
+
+The public site must present the offer in this order:
+
+1. Phoenix Marketing assembles the connected acquisition and lead-processing system.
+2. The visitor chooses a situation: launch from zero, repair an existing break, or connect operations and data.
+3. A diagnostic route is the entry mechanism that identifies the first priority.
+4. Demonstrations prove the method; they do not replace the offer.
+
+Primary public CTA: `Получить разбор системы привлечения`.
+Repair-segment CTA: `Найти разрыв в существующей воронке`.
+Avoid making “quiz” or “funnel break diagnosis” the universal product promise.
