@@ -171,7 +171,7 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
-      const lead = { lead_id: `phoenix-${Date.now()}`, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, result: { segment: result.segment, title: result.title, recommended_product: result.product, checklist: result.checklist, steps: result.steps }, name: data.name, contact: data.contact, role: data.role || null, status: 'new' };
+      const lead = { lead_id: `phoenix-${Date.now()}`, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, result: { segment: result.segment, title: result.title, recommended_product: result.product, checklist: result.checklist, steps: result.steps }, discount: result.discount, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], name: data.name, contact: data.contact, role: data.role || null, status: 'new' };
       const queue = JSON.parse(localStorage.getItem('phoenix_lead_queue') || '[]');
       queue.push(lead);
       localStorage.setItem('phoenix_lead_queue', JSON.stringify(queue));
