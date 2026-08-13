@@ -89,6 +89,7 @@
     quizAnswers = [];
     discountPercent = 0;
     quizResult.hidden = true;
+    quizResult.classList.remove('delivery-result');
     document.querySelector('[data-quiz-start]').hidden = false;
     document.querySelector('[data-quiz-flow]').hidden = true;
     document.querySelector('[data-quiz-flow-title]').textContent = 'Проверьте готовность системы';
@@ -112,7 +113,7 @@
     quizProgress.textContent = `${quizStep + 1} / ${questions.length}`;
     quizQuestion.textContent = current.text;
     quizLead.textContent = 'Выберите один вариант — следующий вопрос появится сразу.';
-    document.querySelector('[data-quiz-expert]').textContent = `Комментарий Дениса: ${current.expert}`;
+    document.querySelector('[data-quiz-expert]').textContent = `Денис: ${current.expert}`;
     quizOptions.innerHTML = '';
     quizOptions.setAttribute('aria-label', current.text);
     const back = document.querySelector('[data-quiz-back]');
@@ -138,12 +139,15 @@
 
   function showContactStep() {
     quizProgress.textContent = 'Контакт';
+    document.querySelector('[data-quiz-flow]').hidden = true;
     document.querySelector('[data-quiz-expert]').textContent = '';
+    document.querySelector('[data-quiz-expert]').closest('.expert-card').hidden = true;
     quizQuestion.textContent = '';
     quizOptions.innerHTML = '';
     document.querySelector('[data-quiz-back]').hidden = true;
     quizLead.textContent = 'Мы подготовили ваш персональный план. Выберите, куда его отправить.';
     quizResult.hidden = false;
+    quizResult.classList.add('delivery-result');
     quizResult.innerHTML = `<span class="result-kicker">ПЛАН ГОТОВ</span><h3>Куда отправить результаты?</h3><p>Результат, чек-лист и бонусы придут после сохранения контакта. Мы не звоним — отправляем материалы выбранным способом.</p><form class="lead-form delivery-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><label>Роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж"></label><fieldset><legend>Канал доставки</legend><label class="delivery-choice"><input type="radio" name="delivery" value="telegram" checked><span>Telegram</span></label><label class="delivery-choice"><input type="radio" name="delivery" value="email"><span>Email</span></label></fieldset><label>Email для отправки<input name="email" type="email" autocomplete="email" inputmode="email"></label><label>Телефон — необязательно<input name="phone" type="tel" autocomplete="tel" inputmode="tel"></label><p class="form-note">Телефон нужен только как дополнительный контакт. Мы не звоним.</p><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для отправки результата.</span></label><button class="button primary" type="submit">Получить результат в выбранном канале <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
     const form = quizResult.querySelector('[data-lead-form]');
     const delivery = form.querySelectorAll('input[name="delivery"]');
