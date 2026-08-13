@@ -1,10 +1,10 @@
 (() => {
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const revealItems = document.querySelectorAll('.reveal');
-  if (reduced) revealItems.forEach((item) => item.classList.add('visible'));
+  if (reduced) revealItems.forEach((item) => item.classList.add('is-visible'));
   else {
     const observer = new IntersectionObserver((entries) => entries.forEach((entry) => {
-      if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      if (entry.isIntersecting) { entry.target.classList.add('is-visible'); observer.unobserve(entry.target); }
     }), { threshold: 0.12 });
     revealItems.forEach((item) => observer.observe(item));
   }
