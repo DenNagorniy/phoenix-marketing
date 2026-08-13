@@ -69,8 +69,10 @@
   if (deepLink) {
     resetQuiz();
     openModal(quizModal, null);
-    const cleanUrl = window.location.href.replace(/[?#]quiz(?:=1)?$/, '');
-    window.history.replaceState({}, document.title, cleanUrl);
+    const cleanUrl = new URL(window.location.href);
+    cleanUrl.searchParams.delete('quiz');
+    if (cleanUrl.hash === '#quiz') cleanUrl.hash = '';
+    window.history.replaceState({}, document.title, cleanUrl.toString());
   }
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
