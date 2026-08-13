@@ -33,6 +33,7 @@
   let discountPercent = 0;
   let lastFocused = null;
   const TELEGRAM_BOT_USERNAME = '';
+  document.querySelectorAll('[data-expert-avatar-img]').forEach((image) => { image.src = quizModal.dataset.expertAvatar; });
 
   const questions = [
     { key: 'situation', text: 'На каком этапе сейчас ваш бизнес?', expert: 'Если связки ещё нет, это нормально. Важно сначала определить порядок сборки, а уже потом вести на неё трафик.', options: ['Есть продукт, но системы привлечения ещё нет.', 'Готовимся запускать рекламу.', 'Реклама уже работает, но связка не собрана.', 'Есть заявки, но обработка ведётся вручную.', 'Пока проверяем готовность к системному привлечению.'] },
