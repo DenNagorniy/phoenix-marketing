@@ -148,19 +148,27 @@
     quizLead.textContent = 'Мы подготовили ваш персональный план. Выберите, куда его отправить.';
     quizResult.hidden = false;
     quizResult.classList.add('delivery-result');
-    quizResult.innerHTML = `<span class="result-kicker">ПЛАН ГОТОВ</span><h3>Куда отправить результаты?</h3><p>Результат, чек-лист и бонусы придут после сохранения контакта. Мы не звоним — отправляем материалы выбранным способом.</p><form class="lead-form delivery-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><label>Роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж"></label><fieldset><legend>Канал доставки</legend><label class="delivery-choice"><input type="radio" name="delivery" value="telegram" checked><span>Telegram</span></label><label class="delivery-choice"><input type="radio" name="delivery" value="email"><span>Email</span></label></fieldset><label>Email для отправки<input name="email" type="email" autocomplete="email" inputmode="email"></label><label>Телефон — необязательно<input name="phone" type="tel" autocomplete="tel" inputmode="tel"></label><p class="form-note">Телефон нужен только как дополнительный контакт. Мы не звоним.</p><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для отправки результата.</span></label><button class="button primary" type="submit">Получить результат в выбранном канале <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
+    quizResult.innerHTML = \`<span class="result-kicker">ПЛАН ГОТОВ</span><h3>Куда отправить результаты?</h3><p>Оставьте только нужный контакт. Мы не звоним — отправляем материалы выбранным способом.</p><form class="lead-form delivery-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><div class="form-row"><label>Ниша / чем занимается бизнес<input name="niche" autocomplete="organization" placeholder="Например: мебель на заказ" required></label><label>Роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж" required></label></div><fieldset><legend>Канал доставки</legend><label class="delivery-choice"><input type="radio" name="delivery" value="telegram" checked><span>Telegram</span></label><label class="delivery-choice"><input type="radio" name="delivery" value="email"><span>Почта</span></label></fieldset><div class="contact-channel" data-channel="telegram"><label>Telegram — username или телефон<input name="telegram_contact" autocomplete="username" placeholder="@username или +7 900 000-00-00"></label><p class="form-note">Достаточно username или телефона. Мы не звоним. Результат выдаст бот после нажатия «Старт» или мы напишем вручную.</p></div><div class="contact-channel" data-channel="email" hidden><label>Почта для отправки<input name="email" type="email" autocomplete="email" inputmode="email"></label></div><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для отправки результата.</span></label><button class="button primary" type="submit">Получить результат в выбранном канале <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>\`;
     const form = quizResult.querySelector('[data-lead-form]');
     const delivery = form.querySelectorAll('input[name="delivery"]');
+    const telegramContact = form.querySelector('input[name="telegram_contact"]');
     const email = form.querySelector('input[name="email"]');
-    const syncEmail = () => { email.required = form.querySelector('input[name="delivery"]:checked').value === 'email'; };
-    delivery.forEach((radio) => radio.addEventListener('change', syncEmail));
-    syncEmail();
+    const telegramPanel = form.querySelector('[data-channel="telegram"]');
+    const emailPanel = form.querySelector('[data-channel="email"]');
+    const syncContactChannel = () => {
+      const channel = form.querySelector('input[name="delivery"]:checked').value;
+      telegramPanel.hidden = channel !== 'telegram';
+      emailPanel.hidden = channel !== 'email';
+      telegramContact.required = channel === 'telegram';
+      email.required = channel === 'email';
+    };
+    delivery.forEach((radio) => radio.addEventListener('change', syncContactChannel));
+    syncContactChannel();
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       const data = Object.fromEntries(new FormData(form).entries());
-      const token = `phoenix-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-      const lead = { lead_id: token, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, name: data.name, role: data.role || null, delivery: data.delivery, email: data.email || null, phone: data.phone || null, consent: true, discount: { earned_percent: discountPercent, max_percent: 10, token }, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], status: 'pending_delivery' };
-      const queue = JSON.parse(localStorage.getItem('phoenix_lead_queue') || '[]');
+      const token = \`phoenix-\${Date.now()}-\${Math.random().toString(36).slice(2, 8)}\`;
+      const lead = { lead_id: token, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, name: data.name, niche: data.niche, role: data.role, delivery: data.delivery, telegram_contact: data.telegram_contact || null, email: data.email || null, consent: true, discount: { earned_percent: discountPercent, max_percent: 10, token }, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], status: 'pending_delivery' };
       queue.push(lead);
       localStorage.setItem('phoenix_lead_queue', JSON.stringify(queue));
       showThankYou(lead);
