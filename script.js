@@ -33,7 +33,7 @@
   let discountPercent = 0;
   let lastFocused = null;
   const TELEGRAM_BOT_USERNAME = '';
-  const LEAD_ENDPOINT = '';
+  const LEAD_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyAEdQU95ewD-Te34eN8x7eMC-yJnCMSHmp9pJngLRKLoIs6Yc5gkfnB-gw-gckD6I4/exec';
   document.querySelectorAll('[data-expert-avatar-img]').forEach((image) => { image.src = quizModal.dataset.expertAvatar; });
 
   const questions = [
