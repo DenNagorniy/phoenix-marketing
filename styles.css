@@ -86,3 +86,7 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 
 /* Quiz v4.4: reserve close-button space in progress row */
 .quiz-progress{box-sizing:border-box;padding-right:60px}
+
+/* Quiz v4.5: progressive contact fields */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.contact-channel[hidden]{display:none!important}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
