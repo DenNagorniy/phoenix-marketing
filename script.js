@@ -199,7 +199,6 @@
         showThankYou(lead);
       }
     });
-    });
   }
 
   function saveLeadLocally(lead) {
