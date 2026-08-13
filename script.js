@@ -65,6 +65,13 @@
   document.querySelectorAll('[data-close-modal]').forEach((button) => button.addEventListener('click', () => {
     closeModal(button.closest('.modal'));
   }));
+  const deepLink = new URLSearchParams(window.location.search).get('quiz') === '1' || window.location.hash === '#quiz';
+  if (deepLink) {
+    resetQuiz();
+    openModal(quizModal, null);
+    const cleanUrl = window.location.href.replace(/[?#]quiz(?:=1)?$/, '');
+    window.history.replaceState({}, document.title, cleanUrl);
+  }
   document.addEventListener('keydown', (event) => {
     if (event.key === 'Escape') {
       [quizModal, demoModal].forEach((modal) => { if (modal && !modal.hidden) closeModal(modal); });
@@ -85,8 +92,9 @@
       option.className = 'quiz-option';
       option.type = 'button';
       option.textContent = label;
+      option.setAttribute('aria-pressed', 'false');
       option.addEventListener('click', () => {
-        quizAnswers.push(label);
+        quizAnswers[quizStep] = label;
         if (quizStep < questions.length - 1) { quizStep += 1; renderQuestion(); }
         else showQuizResult();
       });
@@ -95,19 +103,54 @@
   }
   function showQuizResult() {
     const text = quizAnswers.join(' ').toLowerCase();
-    let title = 'Проверить связность пути клиента';
-    let copy = 'Начать стоит с сопоставления рекламного обещания, первого экрана сайта и следующего шага. Это поможет понять, где человек может терять контекст.';
-    if (text.includes('менеджер') || text.includes('контекст')) { title = 'Проверить передачу контекста менеджеру'; copy = 'Похоже, первым стоит проверить, какие данные получает менеджер вместе с заявкой: источник, ответы, потребность и следующий шаг.'; }
-    else if (text.includes('мало') || text.includes('заявок')) { title = 'Найти разрыв между интересом и заявкой'; copy = 'Первым стоит проверить связку креатива, страницы и диагностического маршрута: обещание должно продолжаться на каждом следующем экране.'; }
-    else if (text.includes('сайт')) { title = 'Проверить первый экран и следующий шаг'; copy = 'Первым стоит проверить, отвечает ли сайт на исходный запрос из рекламы и понятно ли человеку, что делать дальше.'; }
+    let segment = 'early_research';
+    let title = 'Собрать связку под вашу точку старта';
+    let copy = 'Сначала определим аудиторию, боли и обещание, затем соберём маршрут от креатива до разговора менеджера.';
+    let next = 'Карта системы';
+    if (text.includes('менеджер') || text.includes('контекст')) {
+      segment = 'owner_operator';
+      title = 'Соединить заявку с контекстом';
+      copy = 'В связке важно передать менеджеру не только контакт, но и источник, ответы, потребность и понятный следующий шаг.';
+      next = 'Операционный контур';
+    } else if (text.includes('мало') || text.includes('заявок')) {
+      segment = 'loop_repair';
+      title = 'Собрать маршрут от интереса до заявки';
+      copy = 'Начнём с рекламного обещания, страницы и диагностического маршрута, чтобы холодный интерес получил понятный следующий шаг.';
+      next = 'Пилотная связка';
+    } else if (text.includes('сайт') || text.includes('поиск')) {
+      segment = 'launch_architect';
+      title = 'Собрать систему до запуска трафика';
+      copy = 'До закупки трафика свяжем сегменты, боли, креативы, сайт, маршрут и передачу заявки менеджеру.';
+      next = 'Карта системы';
+    }
     quizProgress.textContent = 'Результат';
     quizBar.style.width = '100%';
     quizQuestion.textContent = '';
     quizOptions.innerHTML = '';
     quizLead.hidden = true;
     quizResult.hidden = false;
-    quizResult.innerHTML = `<h3>${title}</h3><p>${copy}</p><button class="button primary" type="button" data-result-close>Получить короткий разбор <span aria-hidden="true">↗</span></button>`;
-    quizResult.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
+    quizResult.innerHTML = `<span class="result-kicker">ВАШ ОРИЕНТИР · ${segment}</span><h3>${title}</h3><p>${copy}</p><div class="result-meta"><strong>Следующий состав: ${next}</strong><span>Приоритет: связать следующий шаг с реальным контекстом клиента.</span></div><button class="button primary" type="button" data-result-contact>Запросить состав проекта <span aria-hidden="true">↗</span></button><p class="result-note">Сначала покажем состав работ. Контакт нужен, чтобы отправить его вам.</p>`;
+    quizResult.querySelector('[data-result-contact]').addEventListener('click', () => showLeadForm({ segment, title, next }));
+  }
+
+  function showLeadForm(result) {
+    quizResult.innerHTML = `<span class="result-kicker">СЛЕДУЮЩИЙ ШАГ</span><h3>Получить состав системы</h3><p>Оставьте контакт — подготовим короткий разбор под ваш результат диагностики.</p><form class="lead-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><label>Телефон или Telegram<input name="contact" autocomplete="tel" required></label><label>Ваша роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж"></label><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для ответа на запрос.</span></label><button class="button primary" type="submit">Получить разбор <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
+    const form = quizResult.querySelector('[data-lead-form]');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = Object.fromEntries(new FormData(form).entries());
+      const lead = { lead_id: `phoenix-${Date.now()}`, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, result: { segment: result.segment, title: result.title, next: result.next }, name: data.name, contact: data.contact, role: data.role || null, status: 'new' };
+      const queue = JSON.parse(localStorage.getItem('phoenix_lead_queue') || '[]');
+      queue.push(lead);
+      localStorage.setItem('phoenix_lead_queue', JSON.stringify(queue));
+      form.innerHTML = '<div class="lead-confirmation"><strong>Разбор подготовлен в этом браузере.</strong><p>Канал передачи менеджеру ещё не подключён. Запись сохранена как демонстрационный lead object; после подключения endpoint она будет отправляться в CRM, таблицу или бота.</p><button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>';
+      form.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
+    });
+  }
+
+  function getSourceData() {
+    const params = new URLSearchParams(window.location.search);
+    return { utm_source: params.get('utm_source'), utm_medium: params.get('utm_medium'), utm_campaign: params.get('utm_campaign'), yclid: params.get('yclid'), referrer: document.referrer || null, landing_url: window.location.href };
   }
 
   document.querySelectorAll('.js-open-demo').forEach((button) => button.addEventListener('click', () => {
