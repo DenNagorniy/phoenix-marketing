@@ -83,3 +83,6 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 /* Quiz v4.3: stable progress and contact state */
 .quiz-progress{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;flex-wrap:nowrap}.quiz-progress .progress-track{min-width:0}.quiz-discount{width:auto!important}.quiz-flow[hidden]{display:none!important}.delivery-result{max-height:calc(100svh - 150px);overflow:auto;margin-top:0}.delivery-result .lead-form{padding-bottom:8px}
 @media(max-width:700px){.quiz-progress{grid-template-columns:auto minmax(0,1fr) auto;gap:6px;font-size:10px}.quiz-discount{font-size:9px}.delivery-result{max-height:calc(100svh - 125px)}}
+
+/* Quiz v4.4: reserve close-button space in progress row */
+.quiz-progress{box-sizing:border-box;padding-right:60px}
