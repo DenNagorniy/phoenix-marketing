@@ -129,3 +129,17 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 /* Final hero override: this must come after the base hero rules. */
 .hero{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background-image:linear-gradient(90deg,rgba(10,9,8,.58) 0%,rgba(10,9,8,.42) 34%,rgba(10,9,8,.12) 70%,rgba(10,9,8,.04) 100%),url('assets/phoenix-system-hero.png')}
 @media(max-width:560px){.hero{background-image:linear-gradient(180deg,rgba(10,9,8,.62) 0%,rgba(10,9,8,.42) 48%,rgba(10,9,8,.72) 100%),url('assets/phoenix-system-hero.png')}}
+
+/* Full-bleed section rhythm: backgrounds reach the viewport, content stays contained. */
+.section{position:relative;isolation:isolate;background:transparent!important}
+.section::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:var(--section-bg,var(--ink))}
+.mechanism{--section-bg:#e9e4d8;color:#171512}
+.diagnostic-section{--section-bg:#e2d6c4;color:#171512}
+.scenarios{--section-bg:#dcd2c1;color:#171512}
+.fit{--section-bg:#eee9df;color:#171512}
+.proof{--section-bg:#0b0b0a;color:var(--paper)}
+.offers,.offer{--section-bg:#151310;color:var(--paper)}
+.mechanism p,.diagnostic-section p,.scenarios p,.fit p{color:#514b43}
+.mechanism-card p{color:#514b43}
+.scenario-intro,.scenario-card p,.section-note,.diagnostic-points p,.fit-row p{color:#514b43}
+.diagnostic-points b,.fit-row b,.scenario-card h3{color:#171512}
