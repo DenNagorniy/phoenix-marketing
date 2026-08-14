@@ -130,6 +130,10 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .hero{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background-image:linear-gradient(90deg,rgba(10,9,8,.58) 0%,rgba(10,9,8,.42) 34%,rgba(10,9,8,.12) 70%,rgba(10,9,8,.04) 100%),url('assets/phoenix-system-hero.png')}
 @media(max-width:560px){.hero{background-image:linear-gradient(180deg,rgba(10,9,8,.62) 0%,rgba(10,9,8,.42) 48%,rgba(10,9,8,.72) 100%),url('assets/phoenix-system-hero.png')}}
 
+/* Stable first-screen hero: one viewport, one background scale, no oversized crop. */
+.hero{min-height:100svh;height:100svh;max-width:none;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background-size:100% 100%;background-position:center center;background-repeat:no-repeat}
+@media(max-width:560px){.hero{height:auto;min-height:100svh;background-size:cover;background-position:center top}}
+
 /* Full-bleed section rhythm: backgrounds reach the viewport, content stays contained. */
 .section{position:relative;isolation:isolate;background:transparent!important}
 .section::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:var(--section-bg,var(--ink))}
