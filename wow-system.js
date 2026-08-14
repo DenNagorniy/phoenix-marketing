@@ -1,23 +1,47 @@
-/* Phoenix Marketing wow layer W1: one owner, progressive enhancement, static fallback. */
+/* Phoenix Marketing wow layer: one owner, progressive enhancement, static fallback. */
 (function () {
   'use strict';
 
   function initWowSystem() {
     const demoStack = document.querySelector('.demo-stack');
-    if (demoStack) demoStack.dataset.wowScene = 'demo';
+    if (demoStack) {
+      demoStack.dataset.wowScene = 'demo';
+      demoStack.dataset.wowObserve = 'manual';
+    }
     const scenes = Array.from(document.querySelectorAll('[data-wow-scene]'));
     if (!scenes.length) return false;
 
-    const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
-    const coarsePointer = window.matchMedia?.('(pointer: coarse)').matches;
+    const reducedMotion = Boolean(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches);
+    const coarsePointer = Boolean(window.matchMedia?.('(pointer: coarse)').matches);
     const canObserve = 'IntersectionObserver' in window;
+    const staticMode = reducedMotion || coarsePointer || !canObserve;
+    const observedScenes = scenes.filter((scene) => scene.dataset.wowObserve !== 'manual');
 
     scenes.forEach((scene) => {
-      scene.dataset.wowState = reducedMotion || !canObserve ? 'static' : 'idle';
+      scene.dataset.wowState = staticMode ? 'static' : 'idle';
       scene.dataset.wowPointer = coarsePointer ? 'coarse' : 'fine';
     });
 
-    if (reducedMotion || !canObserve) return true;
+    const stopDecorativeSystem = () => {
+      document.documentElement.dataset.wowStopped = 'true';
+      scenes.forEach((scene) => { scene.dataset.wowState = 'stopped'; });
+    };
+    document.addEventListener('click', (event) => {
+      const target = event.target instanceof Element ? event.target : null;
+      if (target?.closest('.js-open-quiz, .demo-final-cta')) stopDecorativeSystem();
+      if (target?.closest('.js-open-demo')) window.setTimeout(activateDemo, 40);
+    }, { passive: true });
+
+    function activateDemo() {
+      const stack = document.querySelector('.demo-stack');
+      if (!stack) return;
+      stack.dataset.wowState = 'ready';
+      stack.dataset.wowPlayed = 'true';
+      window.setTimeout(() => { stack.dataset.wowState = 'complete'; }, 1050);
+    }
+    window.activateWowDemo = activateDemo;
+
+    if (staticMode) return true;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -31,9 +55,9 @@
           entry.target.dataset.wowState = 'idle';
         }
       });
-    }, { threshold: 0.18 });
+    }, { threshold: 0.08, rootMargin: '0px 0px -8% 0px' });
 
-    scenes.forEach((scene) => observer.observe(scene));
+    observedScenes.forEach((scene) => observer.observe(scene));
 
     const branches = Array.from(document.querySelectorAll('[data-wow-branch]'));
     const activateBranch = (branch) => {
@@ -51,7 +75,9 @@
 
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
-        scenes.forEach((scene) => { scene.dataset.wowState = 'idle'; });
+        scenes.forEach((scene) => {
+          if (scene.dataset.wowState !== 'stopped') scene.dataset.wowState = 'idle';
+        });
       }
     }, { passive: true });
 

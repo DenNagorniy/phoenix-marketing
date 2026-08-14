@@ -159,3 +159,6 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .mechanism-card p{color:#514b43}
 .scenario-intro,.scenario-card p,.section-note,.diagnostic-points p,.fit-row p{color:#514b43}
 .diagnostic-points b,.fit-row b,.scenario-card h3{color:#171512}
+
+/* W0 accessibility guard: compact links remain comfortable touch targets. */
+.text-link,.site-footer a,.contact-column>a,.brand{min-height:44px;display:inline-flex;align-items:center}
