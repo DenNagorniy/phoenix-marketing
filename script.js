@@ -76,6 +76,12 @@
     reachGoal('quiz_open');
     openModal(quizModal, button);
   }));
+  document.querySelectorAll('.demo-final-cta').forEach((button) => button.addEventListener('click', () => {
+    closeModal(demoModal);
+    resetQuiz();
+    reachGoal('quiz_open');
+    openModal(quizModal, button);
+  }));
   document.querySelector('[data-start-quiz]').addEventListener('click', startQuiz);
   document.querySelectorAll('[data-close-modal]').forEach((button) => button.addEventListener('click', () => {
     closeModal(button.closest('.modal'));
@@ -273,9 +279,13 @@
     document.querySelector('[data-demo-ops]').textContent = demo.ops;
     document.querySelector('[data-demo-price]').textContent = demo.price;
     const assets = document.querySelector('[data-demo-assets]');
-    assets.innerHTML = (demo.assets || []).map((asset) => asset.type === 'file'
-      ? `<a class="demo-asset-link" href="${escapeHtml(asset.url)}" target="_blank" rel="noreferrer">${escapeHtml(asset.title)} ↗</a>`
-      : `<figure class="demo-asset-card"><img src="${escapeHtml(asset.url)}" alt="${escapeHtml(asset.alt || asset.title)}"><figcaption>${escapeHtml(asset.title)}</figcaption></figure>`).join('');
+    assets.innerHTML = (demo.assets || []).filter((asset) => asset.type === 'image').map((asset) => `<figure class="demo-asset-card"><img src="${escapeHtml(asset.url)}" alt="${escapeHtml(asset.alt || asset.title)}"><figcaption><strong>${escapeHtml(asset.title)}</strong><span>${escapeHtml(asset.adText || '')}</span>${asset.links?.length ? `<small>Быстрые ссылки: ${escapeHtml(asset.links.join(' · '))}</small>` : ''}</figcaption></figure>`).join('');
+    document.querySelector('[data-demo-integrations]').innerHTML = (demo.integrations || []).map((item) => `<div class="demo-integration">${escapeHtml(item)}</div>`).join('');
+    const bonusHeading = document.querySelector('[data-demo-bonus-heading]');
+    bonusHeading.textContent = demo.bonusHeading || 'PDF-бонусы';
+    document.querySelector('[data-demo-bonuses]').innerHTML = (demo.bonuses || []).length
+      ? (demo.bonuses || []).map((bonus) => `<a class="demo-bonus-link" href="${escapeHtml(bonus.url)}" target="_blank" rel="noreferrer">${escapeHtml(bonus.title)} ↗</a>`).join('')
+      : `<p class="demo-empty">Для этого демонстрационного проекта PDF-бонусы не заявлены. Здесь показаны только доступные материалы.</p>`;
     const frame = document.querySelector('[data-demo-frame]');
     const quizFrame = document.querySelector('[data-demo-quiz-frame]');
     const loading = document.querySelector('[data-frame-loading]');
@@ -290,6 +300,8 @@
       loading.textContent = 'Сайт пока не подключён';
     }
     const quizLoading = document.querySelector('[data-quiz-loading]');
+    const quizSection = quizFrame.closest('section');
+    quizSection.hidden = !demo.quizUrl;
     if (demo.quizUrl) {
       quizFrame.src = demo.quizUrl;
       quizFrame.onload = () => quizLoading.classList.add('is-loaded');
