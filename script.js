@@ -1,4 +1,11 @@
 (() => {
+  const METRIKA_ID = 111611280;
+  const reachGoal = (goal) => {
+    if (typeof window.ym === 'function') window.ym(METRIKA_ID, 'reachGoal', goal);
+  };
+
+  reachGoal('site_open');
+
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const revealItems = document.querySelectorAll('.reveal');
   if (reduced) revealItems.forEach((item) => item.classList.add('is-visible'));
@@ -66,6 +73,7 @@
   };
   document.querySelectorAll('.js-open-quiz').forEach((button) => button.addEventListener('click', () => {
     resetQuiz();
+    reachGoal('quiz_open');
     openModal(quizModal, button);
   }));
   document.querySelector('[data-start-quiz]').addEventListener('click', startQuiz);
@@ -75,6 +83,7 @@
   const deepLink = new URLSearchParams(window.location.search).get('quiz') === '1' || window.location.hash === '#quiz';
   if (deepLink) {
     resetQuiz();
+    reachGoal('quiz_open');
     openModal(quizModal, null);
     const cleanUrl = new URL(window.location.href);
     cleanUrl.searchParams.delete('quiz');
@@ -101,6 +110,7 @@
   }
 
   function startQuiz() {
+    reachGoal('quiz_start');
     document.querySelector('[data-quiz-start]').hidden = true;
     document.querySelector('[data-quiz-flow]').hidden = false;
     quizStep = 0;
@@ -135,7 +145,10 @@
         discountPercent = Math.min(10, Number(((quizStep + 1) * 2.5).toFixed(1)));
         updateDiscount();
         if (quizStep < questions.length - 1) { quizStep += 1; renderQuestion(); }
-        else showContactStep();
+        else {
+          reachGoal('quiz_complete');
+          showContactStep();
+        }
       });
       quizOptions.appendChild(option);
     });
@@ -192,6 +205,7 @@
         return;
       }
       const data = Object.fromEntries(new FormData(form).entries());
+      reachGoal('lead_form_submit');
       const token = `phoenix-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const lead = { lead_id: token, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, name: data.name, niche: data.niche, role: data.role, delivery: data.delivery, telegram_username: data.telegram_username || null, phone: data.phone || null, email: data.email || null, consent: true, discount: { earned_percent: discountPercent, max_percent: 10, token }, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], status: 'pending_delivery' };
       submissionInProgress = true;
@@ -225,8 +239,8 @@
 
   function showThankYou(lead, deliveryError = false) {
     const channel = lead.delivery === 'telegram' ? 'Telegram' : 'email';
-    const botLink = lead.delivery === 'telegram' && TELEGRAM_BOT_USERNAME ? `<a class="button primary" href="https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(lead.lead_id)}">Открыть Telegram и получить результат ↗</a><p class="form-note">Если Telegram Web открыл бота без кода, отправьте ему команду: <code>/start ${escapeHtml(lead.lead_id)}</code></p>` : '';
-    const bonusLinks = `<div class="bonus-downloads"><strong>Скачать бонусы:</strong><a href="${BONUS_LINKS.checklist}">01 · Чек-лист готовности к запуску</a><a href="${BONUS_LINKS.leadPath}">02 · Шаблон пути лида</a></div>`;
+    const botLink = lead.delivery === 'telegram' && TELEGRAM_BOT_USERNAME ? `<a class="button primary" href="https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(lead.lead_id)}" data-ym-goal="result_telegram_open">Открыть Telegram и получить результат ↗</a><p class="form-note">Если Telegram Web открыл бота без кода, отправьте ему команду: <code>/start ${escapeHtml(lead.lead_id)}</code></p>` : '';
+    const bonusLinks = `<div class="bonus-downloads"><strong>Скачать бонусы:</strong><a href="${BONUS_LINKS.checklist}" data-ym-goal="bonus_download">01 · Чек-лист готовности к запуску</a><a href="${BONUS_LINKS.leadPath}" data-ym-goal="bonus_download">02 · Шаблон пути лида</a></div>`;
     const pending = deliveryError ? '<p class="form-status">Не удалось связаться с системой. Попробуйте отправить форму ещё раз.</p>' : '';
     quizResult.innerHTML = `<div class="lead-confirmation"><span class="result-kicker">СПАСИБО</span><strong>Результаты подготовлены.</strong><p>Отправим их в ${channel}. Мы не будем звонить.</p><div class="thankyou-bonuses"><strong>После отправки вы получите:</strong><span>01 · Чек-лист готовности связки</span><span>02 · Шаблон пути лида от рекламы до менеджера</span><span>Накопленная скидка: ${lead.discount.earned_percent}%</span></div>${bonusLinks}${botLink}${pending}<button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>`;
     quizResult.hidden = false;
@@ -235,12 +249,21 @@
     quizResult.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
   }
 
+  document.addEventListener('click', (event) => {
+    const marked = event.target.closest?.('[data-ym-goal]');
+    if (marked) reachGoal(marked.dataset.ymGoal);
+
+    const contactLink = event.target.closest?.('#contacts a[href]');
+    if (contactLink) reachGoal('contact_link_click');
+  });
+
   function getSourceData() {
     const params = new URLSearchParams(window.location.search);
     return { utm_source: params.get('utm_source'), utm_medium: params.get('utm_medium'), utm_campaign: params.get('utm_campaign'), yclid: params.get('yclid'), referrer: document.referrer || null, landing_url: window.location.href };
   }
 
   document.querySelectorAll('.js-open-demo').forEach((button) => button.addEventListener('click', () => {
+    reachGoal('demo_open');
     const id = button.dataset.demoId;
     const demo = demos[id] || demoFallback['mebel-26'];
     document.querySelector('[data-demo-title]').textContent = demo.title;
