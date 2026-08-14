@@ -201,16 +201,14 @@
       submitButton.setAttribute('aria-disabled', 'true');
       status.textContent = 'Сохраняем заявку…';
       if (LEAD_ENDPOINT) {
-        try {
-          await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(lead) });
-          lead.backend_status = 'sent';
-          showThankYou(lead);
-        } catch (error) {
-          lead.backend_status = 'pending_sync';
-          lead.backend_error = error.message;
-          saveLeadLocally(lead);
-          showThankYou(lead, true);
-        }
+        showThankYou(lead);
+        fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(lead) })
+          .then(() => { lead.backend_status = 'sent'; })
+          .catch((error) => {
+            lead.backend_status = 'pending_sync';
+            lead.backend_error = error.message;
+            saveLeadLocally(lead);
+          });
       } else {
         lead.backend_status = 'local_only';
         saveLeadLocally(lead);
