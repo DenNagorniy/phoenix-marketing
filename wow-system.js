@@ -3,6 +3,8 @@
   'use strict';
 
   function initWowSystem() {
+    const demoStack = document.querySelector('.demo-stack');
+    if (demoStack) demoStack.dataset.wowScene = 'demo';
     const scenes = Array.from(document.querySelectorAll('[data-wow-scene]'));
     if (!scenes.length) return false;
 

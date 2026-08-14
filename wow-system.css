@@ -236,3 +236,27 @@
   from { opacity: .62; transform: translateX(-8px); }
   to { opacity: 1; transform: translateX(0); }
 }
+
+/* W6: reveal only the existing demo sections; iframe geometry stays untouched. */
+[data-wow-scene="demo"] > section {
+  opacity: .86;
+  transform: translateY(8px);
+  transition: opacity 360ms ease-out, transform 360ms ease-out;
+}
+
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section,
+.wow-ready [data-wow-scene="demo"][data-wow-state="complete"] > section {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section:nth-child(2) { transition-delay: 70ms; }
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section:nth-child(3) { transition-delay: 140ms; }
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section:nth-child(4) { transition-delay: 210ms; }
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section:nth-child(5) { transition-delay: 280ms; }
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section:nth-child(6) { transition-delay: 350ms; }
+.wow-ready [data-wow-scene="demo"][data-wow-state="ready"] > section:nth-child(7) { transition-delay: 420ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-wow-scene="demo"] > section { opacity: 1; transform: none; transition: none; }
+}
