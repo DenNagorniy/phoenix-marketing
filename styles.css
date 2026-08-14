@@ -144,23 +144,6 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .scenario-intro,.scenario-card p,.section-note,.diagnostic-points p,.fit-row p{color:#514b43}
 .diagnostic-points b,.fit-row b,.scenario-card h3{color:#171512}
 
-/* Scroll-story v2: preserve the original hero and move the motion into a dedicated stage. */
-.hero{min-height:100svh;height:100svh;grid-template-columns:minmax(0,1fr);align-items:center;padding:96px 5vw 88px}
-.hero-copy{max-width:690px;align-self:center;padding-bottom:0}
-.hero-visual{position:absolute;inset:0;min-height:0;height:auto;margin:0;z-index:0;pointer-events:none}
-.hero-visual .visual-label,.hero-visual svg{opacity:.92}
-.hero-copy{z-index:2}
-.hero-rail{position:absolute;z-index:3;left:5vw;right:5vw;bottom:0;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(233,228,216,.22)}
-.hero-rail-item{display:flex;align-items:center;gap:18px;min-height:64px;padding:0 18px;color:var(--dim);text-decoration:none;border-right:1px solid rgba(233,228,216,.22);font:11px var(--mono);letter-spacing:.08em;transition:color .25s ease,background .25s ease}
-.hero-rail-item:first-child{padding-left:0}.hero-rail-item:last-child{border-right:0}.hero-rail-item span{color:var(--copper)}.hero-rail-item.is-active,.hero-rail-item:hover{color:var(--paper);background:rgba(10,9,8,.18)}
-.scroll-story{position:relative;display:grid;grid-template-columns:minmax(0,1fr) minmax(360px,.8fr);gap:8vw;min-height:210vh;padding:0 5vw;background:#e2d6c4;color:#171512;isolation:isolate}
-.scroll-story::before{content:"";position:absolute;z-index:-1;inset:0 50% 0 -50vw;background:#e2d6c4}
-.story-visual{position:sticky;top:0;height:100svh;background:linear-gradient(90deg,rgba(10,9,8,.28),rgba(10,9,8,.06)),url('assets/phoenix-system-hero.png') center/cover;overflow:hidden}
-.story-visual-caption{position:absolute;top:38px;left:38px;color:var(--copper);font:10px var(--mono);letter-spacing:.14em}.story-visual-line{position:absolute;left:12%;right:12%;top:54%;height:2px;background:var(--copper);box-shadow:0 0 18px rgba(232,184,63,.5);transform-origin:left;transition:transform .7s ease}.story-visual[data-active-step="0"] .story-visual-line{transform:scaleX(.28)}.story-visual[data-active-step="1"] .story-visual-line{transform:scaleX(.62)}.story-visual[data-active-step="2"] .story-visual-line{transform:scaleX(1)}
-.story-copy{padding:8vh 0 12vh}.story-step{min-height:70vh;display:grid;align-content:center;gap:14px;border-top:1px solid rgba(23,21,18,.24);opacity:.32;transform:translateY(22px);transition:opacity .4s ease,transform .4s ease}.story-step.is-active{opacity:1;transform:none}.story-step>span{color:#9f6342;font:10px var(--mono);letter-spacing:.13em}.story-step h2{font:400 clamp(42px,5.5vw,78px)/.94 var(--serif);letter-spacing:-.05em;margin:0}.story-step p{max-width:420px;color:#514b43;font-size:18px;line-height:1.55;margin:8px 0 0}
-@media(max-width:900px){.hero{height:100svh;min-height:100svh}.hero-rail{left:20px;right:20px}.hero-rail-item{gap:8px;padding:0 10px;font-size:9px}.scroll-story{grid-template-columns:1fr;min-height:auto;padding:0 20px}.scroll-story::before{display:none}.story-visual{position:relative;top:auto;height:52svh;min-height:340px}.story-copy{padding:0 0 8vh}.story-step{min-height:52vh;opacity:1;transform:none;padding:42px 0}}
-@media(max-width:560px){.hero{padding:112px 20px 76px}.hero-rail{grid-template-columns:repeat(3,minmax(0,1fr))}.hero-rail-item{display:grid;align-content:center;gap:4px;min-height:58px;padding:8px 6px;font-size:8px;line-height:1.2}.hero-rail-item:first-child{padding-left:0}.story-visual{height:42svh;min-height:260px}.story-visual-caption{top:22px;left:20px}.story-step h2{font-size:clamp(42px,12vw,64px)}.story-step p{font-size:16px}}
-
 /* P0 wow effect: the visual stays present while the acquisition story advances. */
 .hero{min-height:210svh;height:auto;grid-template-columns:minmax(320px,.82fr) minmax(420px,1.18fr);align-items:start}
 .hero-copy{align-self:start;padding-bottom:12svh}
