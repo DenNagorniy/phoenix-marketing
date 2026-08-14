@@ -31,6 +31,7 @@
   let quizStep = 0;
   let quizAnswers = [];
   let discountPercent = 0;
+  let submissionInProgress = false;
   let lastFocused = null;
   const TELEGRAM_BOT_USERNAME = 'PhoenixMarketing_bot';
   const LEAD_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyAEdQU95ewD-Te34eN8x7eMC-yJnCMSHmp9pJngLRKLoIs6Yc5gkfnB-gw-gckD6I4/exec';
@@ -90,6 +91,7 @@
     quizStep = 0;
     quizAnswers = [];
     discountPercent = 0;
+    submissionInProgress = false;
     quizResult.hidden = true;
     quizResult.classList.remove('delivery-result');
     document.querySelector('[data-quiz-start]').hidden = false;
@@ -180,6 +182,7 @@
     syncContactChannel();
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      if (submissionInProgress) return;
       syncContactRequirement();
       if (!form.checkValidity()) { form.reportValidity(); return; }
       const selectedChannel = form.querySelector('input[name="delivery"]:checked').value;
@@ -191,6 +194,12 @@
       const data = Object.fromEntries(new FormData(form).entries());
       const token = `phoenix-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
       const lead = { lead_id: token, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, name: data.name, niche: data.niche, role: data.role, delivery: data.delivery, telegram_username: data.telegram_username || null, phone: data.phone || null, email: data.email || null, consent: true, discount: { earned_percent: discountPercent, max_percent: 10, token }, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], status: 'pending_delivery' };
+      submissionInProgress = true;
+      const submitButton = form.querySelector('button[type="submit"]');
+      const status = form.querySelector('[data-lead-status]');
+      submitButton.disabled = true;
+      submitButton.setAttribute('aria-disabled', 'true');
+      status.textContent = 'Сохраняем заявку…';
       if (LEAD_ENDPOINT) {
         try {
           await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(lead) });
@@ -222,6 +231,9 @@
     const bonusLinks = `<div class="bonus-downloads"><strong>Скачать бонусы:</strong><a href="${BONUS_LINKS.checklist}">01 · Чек-лист готовности к запуску</a><a href="${BONUS_LINKS.leadPath}">02 · Шаблон пути лида</a></div>`;
     const pending = deliveryError ? '<p class="form-status">Не удалось связаться с системой. Попробуйте отправить форму ещё раз.</p>' : '';
     quizResult.innerHTML = `<div class="lead-confirmation"><span class="result-kicker">СПАСИБО</span><strong>Результаты подготовлены.</strong><p>Отправим их в ${channel}. Мы не будем звонить.</p><div class="thankyou-bonuses"><strong>После отправки вы получите:</strong><span>01 · Чек-лист готовности связки</span><span>02 · Шаблон пути лида от рекламы до менеджера</span><span>Накопленная скидка: ${lead.discount.earned_percent}%</span></div>${bonusLinks}${botLink}${pending}<button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>`;
+    quizResult.hidden = false;
+    quizResult.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    quizResult.querySelector('.lead-confirmation')?.focus?.();
     quizResult.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
   }
 
