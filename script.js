@@ -34,6 +34,7 @@
   let lastFocused = null;
   const TELEGRAM_BOT_USERNAME = 'PhoenixMarketing_bot';
   const LEAD_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyAEdQU95ewD-Te34eN8x7eMC-yJnCMSHmp9pJngLRKLoIs6Yc5gkfnB-gw-gckD6I4/exec';
+  const BONUS_LINKS = { checklist: 'https://drive.google.com/uc?export=download&id=1ouPVVw3_y4uIU5SYxqjYwWfhRokH288j', leadPath: 'https://drive.google.com/uc?export=download&id=1GIG6bQl7XhAOb4J6m1xIVcLClrrIv6d_' };
   document.querySelectorAll('[data-expert-avatar-img]').forEach((image) => { image.src = quizModal.dataset.expertAvatar; });
 
   const questions = [
@@ -192,11 +193,8 @@
       const lead = { lead_id: token, created_at: new Date().toISOString(), source: getSourceData(), quiz_answers: quizAnswers, name: data.name, niche: data.niche, role: data.role, delivery: data.delivery, telegram_username: data.telegram_username || null, phone: data.phone || null, email: data.email || null, consent: true, discount: { earned_percent: discountPercent, max_percent: 10, token }, bonuses: ['Чек-лист готовности связки к запуску', 'Шаблон пути лида от рекламы до менеджера'], status: 'pending_delivery' };
       if (LEAD_ENDPOINT) {
         try {
-          const response = await fetch(LEAD_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(lead) });
-          const result = await response.json();
-          if (!response.ok || !result.ok) throw new Error(result.error || 'Lead endpoint failed');
-          lead.backend_status = 'received';
-          lead.backend_result = result;
+          await fetch(LEAD_ENDPOINT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(lead) });
+          lead.backend_status = 'sent';
           showThankYou(lead);
         } catch (error) {
           lead.backend_status = 'pending_sync';
@@ -220,9 +218,10 @@
 
   function showThankYou(lead, deliveryError = false) {
     const channel = lead.delivery === 'telegram' ? 'Telegram' : 'email';
-    const botLink = lead.delivery === 'telegram' && TELEGRAM_BOT_USERNAME ? `<a class="button primary" href="https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(lead.lead_id)}" target="_blank" rel="noreferrer">Открыть Telegram и получить результат ↗</a>` : '';
-    const pending = deliveryError ? '<p class="form-status">Не удалось передать заявку в облачную систему. Она сохранена для повторной обработки.</p>' : lead.delivery === 'telegram' && !TELEGRAM_BOT_USERNAME ? '<p class="form-status">Telegram-бот ещё не подключён. Заявка сохранена со статусом ожидания доставки.</p>' : lead.delivery === 'telegram' ? '<p class="form-status">Откройте бота и нажмите «Старт», чтобы получить результат.</p>' : lead.delivery === 'email' && lead.backend_status !== 'received' ? '<p class="form-status">Email endpoint ещё не подключён. Заявка сохранена локально со статусом ожидания доставки.</p>' : '';
-    quizResult.innerHTML = `<div class="lead-confirmation"><span class="result-kicker">СПАСИБО</span><strong>Результаты подготовлены.</strong><p>Отправим их в ${channel}. Мы не будем звонить.</p><div class="thankyou-bonuses"><strong>После отправки вы получите:</strong><span>01 · Чек-лист готовности связки</span><span>02 · Шаблон пути лида</span><span>Накопленная скидка: ${lead.discount.earned_percent}%</span></div>${botLink}${pending}<button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>`;
+    const botLink = lead.delivery === 'telegram' && TELEGRAM_BOT_USERNAME ? `<a class="button primary" href="https://t.me/${TELEGRAM_BOT_USERNAME}?start=${encodeURIComponent(lead.lead_id)}">Открыть Telegram и получить результат ↗</a><p class="form-note">Если Telegram Web открыл бота без кода, отправьте ему команду: <code>/start ${escapeHtml(lead.lead_id)}</code></p>` : '';
+    const bonusLinks = `<div class="bonus-downloads"><strong>Скачать бонусы:</strong><a href="${BONUS_LINKS.checklist}">01 · Чек-лист готовности к запуску</a><a href="${BONUS_LINKS.leadPath}">02 · Шаблон пути лида</a></div>`;
+    const pending = deliveryError ? '<p class="form-status">Не удалось связаться с системой. Попробуйте отправить форму ещё раз.</p>' : '';
+    quizResult.innerHTML = `<div class="lead-confirmation"><span class="result-kicker">СПАСИБО</span><strong>Результаты подготовлены.</strong><p>Отправим их в ${channel}. Мы не будем звонить.</p><div class="thankyou-bonuses"><strong>После отправки вы получите:</strong><span>01 · Чек-лист готовности связки</span><span>02 · Шаблон пути лида от рекламы до менеджера</span><span>Накопленная скидка: ${lead.discount.earned_percent}%</span></div>${bonusLinks}${botLink}${pending}<button class="button secondary" type="button" data-result-close>Вернуться к странице</button></div>`;
     quizResult.querySelector('[data-result-close]').addEventListener('click', () => closeModal(quizModal));
   }
 
