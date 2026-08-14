@@ -272,25 +272,30 @@
     document.querySelector('[data-demo-creatives]').textContent = demo.creatives;
     document.querySelector('[data-demo-ops]').textContent = demo.ops;
     document.querySelector('[data-demo-price]').textContent = demo.price;
+    const assets = document.querySelector('[data-demo-assets]');
+    assets.innerHTML = (demo.assets || []).map((asset) => asset.type === 'file'
+      ? `<a class="demo-asset-link" href="${escapeHtml(asset.url)}" target="_blank" rel="noreferrer">${escapeHtml(asset.title)} ↗</a>`
+      : `<figure class="demo-asset-card"><img src="${escapeHtml(asset.url)}" alt="${escapeHtml(asset.alt || asset.title)}"><figcaption>${escapeHtml(asset.title)}</figcaption></figure>`).join('');
     const frame = document.querySelector('[data-demo-frame]');
+    const quizFrame = document.querySelector('[data-demo-quiz-frame]');
     const loading = document.querySelector('[data-frame-loading]');
-    const fallback = document.querySelector('[data-demo-fallback]');
     frame.removeAttribute('src');
-    if (fallback) {
-      fallback.removeAttribute('href');
-      fallback.hidden = true;
-    }
+    quizFrame.removeAttribute('src');
     loading.classList.remove('is-loaded');
     if (demo.siteUrl) {
       frame.src = demo.siteUrl;
-      if (fallback) {
-        fallback.href = demo.fallbackUrl || demo.siteUrl;
-        fallback.hidden = false;
-      }
       frame.onload = () => loading.classList.add('is-loaded');
-      loading.textContent = 'Загрузка демо-сайта…';
+      loading.textContent = 'Загрузка сайта…';
     } else {
-      loading.textContent = 'Публичное демо ещё не опубликовано';
+      loading.textContent = 'Сайт пока не подключён';
+    }
+    const quizLoading = document.querySelector('[data-quiz-loading]');
+    if (demo.quizUrl) {
+      quizFrame.src = demo.quizUrl;
+      quizFrame.onload = () => quizLoading.classList.add('is-loaded');
+      quizLoading.textContent = 'Загрузка квиза…';
+    } else {
+      quizLoading.textContent = 'Отдельный квиз пока не опубликован';
     }
     openModal(demoModal, button);
   }));
