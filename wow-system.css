@@ -88,3 +88,50 @@
 @media (prefers-reduced-motion: reduce) {
   .wow-hero-layer { display: none; }
 }
+
+/* W3: the hero signal hands off to the three process stages. */
+[data-wow-scene="process"] {
+  position: relative;
+  overflow: hidden;
+}
+
+[data-wow-scene="process"]::before {
+  content: '';
+  position: absolute;
+  inset: auto 5vw 13px 5vw;
+  border-top: 1px solid rgba(232, 184, 63, .26);
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-wow-scene="process"]::after {
+  content: '';
+  position: absolute;
+  inset: auto auto 10px 5vw;
+  inline-size: 9px;
+  block-size: 5px;
+  border-radius: 50%;
+  background: var(--copper, #e8b83f);
+  box-shadow: 0 0 14px rgba(232, 184, 63, .72);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.wow-ready [data-wow-scene="process"][data-wow-state="ready"]::before {
+  opacity: 1;
+}
+
+.wow-ready [data-wow-scene="process"][data-wow-state="ready"]::after {
+  opacity: 1;
+  animation: wow-process-signal-pass 900ms cubic-bezier(.22, .61, .36, 1) 1 both;
+}
+
+@keyframes wow-process-signal-pass {
+  from { transform: translateX(-16px); }
+  to { transform: translateX(calc(90vw - 9px)); }
+}
+
+@media (max-width: 560px) {
+  [data-wow-scene="process"]::before,
+  [data-wow-scene="process"]::after { display: none; }
+}
