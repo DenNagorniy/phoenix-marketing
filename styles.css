@@ -143,6 +143,9 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .proof-strip p{max-width:290px;margin:9px 0 0;color:var(--dim);font-size:13px;line-height:1.45;letter-spacing:0;text-transform:none}
 @media(max-width:560px){.proof-strip{grid-template-columns:1fr;padding:0 20px}.proof-strip div,.proof-strip div+div{min-height:0;padding:18px 0;gap:16px}.proof-strip div>div{padding:0}.proof-strip p{max-width:none}}
 
+/* Baseline mobile guard: long offer copy must not widen the document. */
+@media(max-width:560px){.offer>div,.offer-card,.offer-lead{min-width:0;max-width:100%;overflow-wrap:anywhere}.hero{width:auto;margin-left:0;margin-right:0}}
+
 /* Full-bleed section rhythm: backgrounds reach the viewport, content stays contained. */
 .section{position:relative;isolation:isolate;background:transparent!important}
 .section::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:var(--section-bg,var(--ink))}
