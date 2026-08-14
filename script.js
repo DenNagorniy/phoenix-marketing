@@ -276,13 +276,17 @@
     const loading = document.querySelector('[data-frame-loading]');
     const fallback = document.querySelector('[data-demo-fallback]');
     frame.removeAttribute('src');
-    fallback.removeAttribute('href');
-    fallback.hidden = true;
+    if (fallback) {
+      fallback.removeAttribute('href');
+      fallback.hidden = true;
+    }
     loading.classList.remove('is-loaded');
     if (demo.siteUrl) {
       frame.src = demo.siteUrl;
-      fallback.href = demo.fallbackUrl || demo.siteUrl;
-      fallback.hidden = false;
+      if (fallback) {
+        fallback.href = demo.fallbackUrl || demo.siteUrl;
+        fallback.hidden = false;
+      }
       frame.onload = () => loading.classList.add('is-loaded');
       loading.textContent = 'Загрузка демо-сайта…';
     } else {
