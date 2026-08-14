@@ -125,3 +125,7 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .bonus-downloads strong { color: var(--copper, #b56f40); font-size: .78rem; letter-spacing: .12em; text-transform: uppercase; }
 .bonus-downloads a { display: block; min-height: 44px; padding: 12px 14px; border: 1px solid rgba(181, 111, 64, .55); color: inherit; text-decoration: none; line-height: 1.35; }
 .bonus-downloads a:hover, .bonus-downloads a:focus-visible { background: rgba(181, 111, 64, .16); border-color: var(--copper, #b56f40); }
+
+/* Final hero override: this must come after the base hero rules. */
+.hero{width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background-image:linear-gradient(90deg,rgba(10,9,8,.58) 0%,rgba(10,9,8,.42) 34%,rgba(10,9,8,.12) 70%,rgba(10,9,8,.04) 100%),url('assets/phoenix-system-hero.png')}
+@media(max-width:560px){.hero{background-image:linear-gradient(180deg,rgba(10,9,8,.62) 0%,rgba(10,9,8,.42) 48%,rgba(10,9,8,.72) 100%),url('assets/phoenix-system-hero.png')}}
