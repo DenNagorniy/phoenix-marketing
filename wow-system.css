@@ -260,3 +260,32 @@
 @media (prefers-reduced-motion: reduce) {
   [data-wow-scene="demo"] > section { opacity: 1; transform: none; transition: none; }
 }
+
+/* W7: a quiet final convergence around the existing CTA. */
+[data-wow-scene="cta"] .offer-card {
+  position: relative;
+}
+
+[data-wow-scene="cta"] .offer-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border: 1px solid var(--copper, #e8b83f);
+  opacity: 0;
+  transform: scale(.97);
+  pointer-events: none;
+}
+
+[data-wow-scene="cta"][data-wow-state="ready"] .offer-card::before {
+  animation: wow-cta-converge 780ms cubic-bezier(.22, .61, .36, 1) 1 both;
+}
+
+@keyframes wow-cta-converge {
+  0% { opacity: 0; transform: scale(.97); }
+  55% { opacity: .72; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.015); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-wow-scene="cta"] .offer-card::before { display: none; }
+}
