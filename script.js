@@ -149,7 +149,7 @@
     quizLead.textContent = 'Мы подготовили ваш персональный план. Выберите, куда его отправить.';
     quizResult.hidden = false;
     quizResult.classList.add('delivery-result');
-    quizResult.innerHTML = `<span class="result-kicker">ПЛАН ГОТОВ</span><h3>Куда отправить результаты?</h3><p>Оставьте только нужный контакт. Мы не звоним — отправляем материалы выбранным способом.</p><form class="lead-form delivery-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><div class="form-row"><label>Ниша / чем занимается бизнес<input name="niche" autocomplete="organization" placeholder="Например: мебель на заказ" required></label><label>Роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж" required></label></div><fieldset><legend>Канал доставки</legend><label class="delivery-choice"><input type="radio" name="delivery" value="telegram" checked><span>Telegram</span></label><label class="delivery-choice"><input type="radio" name="delivery" value="email"><span>Почта</span></label></fieldset><div class="contact-channel" data-channel="telegram"><label>Username в Telegram — необязательно<input name="telegram_username" autocomplete="username" placeholder="@username"></label><label>Телефон — необязательно<input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="+7 900 000-00-00"></label><p class="form-note">Заполните хотя бы одно поле. Мы не звоним. Результат выдаст бот после нажатия «Старт» или мы напишем вручную.</p></div><div class="contact-channel" data-channel="email" hidden><label>Почта для отправки<input name="email" type="email" autocomplete="email" inputmode="email"></label></div><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для отправки результата.</span></label><button class="button primary" type="submit">Получить результат в выбранном канале <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
+    quizResult.innerHTML = `<span class="result-kicker">ПЛАН ГОТОВ</span><h3>Куда отправить результаты?</h3><p>Оставьте только нужный контакт. Мы не звоним — отправляем материалы выбранным способом.</p><form class="lead-form delivery-form" data-lead-form><label>Имя<input name="name" autocomplete="name" required></label><div class="form-row"><label>Ниша / чем занимается бизнес<input name="niche" autocomplete="organization" placeholder="Например: мебель на заказ" required></label><label>Роль<input name="role" autocomplete="organization-title" placeholder="Владелец, маркетолог, руководитель продаж" required></label></div><fieldset><legend>Канал доставки</legend><label class="delivery-choice"><input type="radio" name="delivery" value="telegram" checked><span>Telegram</span></label><label class="delivery-choice"><input type="radio" name="delivery" value="email"><span>Почта</span></label></fieldset><div class="contact-channel" data-channel="telegram"><label>Username в Telegram<input name="telegram_username" autocomplete="username" aria-required="true" placeholder="@username"></label><label>Телефон<input name="phone" type="tel" autocomplete="tel" inputmode="tel" aria-required="true" placeholder="+7 900 000-00-00"></label><p class="form-note">Заполните хотя бы одно поле. Мы не звоним. Результат выдаст бот после нажатия «Старт» или мы напишем вручную.</p></div><div class="contact-channel" data-channel="email" hidden><label>Почта для отправки<input name="email" type="email" autocomplete="email" inputmode="email"></label></div><label class="consent"><input type="checkbox" name="consent" required><span>Согласен на обработку данных для отправки результата.</span></label><button class="button primary" type="submit">Получить результат в выбранном канале <span aria-hidden="true">↗</span></button><p class="form-status" data-lead-status role="status"></p></form>`;
     const form = quizResult.querySelector('[data-lead-form]');
     const delivery = form.querySelectorAll('input[name="delivery"]');
     const telegramUsername = form.querySelector('input[name="telegram_username"]');
@@ -157,18 +157,29 @@
     const email = form.querySelector('input[name="email"]');
     const telegramPanel = form.querySelector('[data-channel="telegram"]');
     const emailPanel = form.querySelector('[data-channel="email"]');
+    const syncContactRequirement = () => {
+      const channel = form.querySelector('input[name="delivery"]:checked').value;
+      const hasUsername = Boolean(telegramUsername.value.trim());
+      const hasPhone = Boolean(phone.value.trim());
+      const missingTelegramContact = channel === 'telegram' && !hasUsername && !hasPhone;
+      telegramUsername.required = channel === 'telegram' && !hasPhone;
+      phone.required = channel === 'telegram' && !hasUsername;
+      telegramUsername.setCustomValidity(missingTelegramContact ? 'Укажите username в Telegram или номер телефона.' : '');
+      phone.setCustomValidity(missingTelegramContact ? 'Укажите username в Telegram или номер телефона.' : '');
+    };
     const syncContactChannel = () => {
       const channel = form.querySelector('input[name="delivery"]:checked').value;
       telegramPanel.hidden = channel !== 'telegram';
       emailPanel.hidden = channel !== 'email';
-      telegramUsername.required = false;
-      phone.required = false;
       email.required = channel === 'email';
+      syncContactRequirement();
     };
     delivery.forEach((radio) => radio.addEventListener('change', syncContactChannel));
+    [telegramUsername, phone].forEach((input) => input.addEventListener('input', syncContactRequirement));
     syncContactChannel();
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
+      syncContactRequirement();
       if (!form.checkValidity()) { form.reportValidity(); return; }
       const selectedChannel = form.querySelector('input[name="delivery"]:checked').value;
       if (selectedChannel === 'telegram' && !telegramUsername.value.trim() && !phone.value.trim()) {
