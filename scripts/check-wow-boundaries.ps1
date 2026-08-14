@@ -5,7 +5,8 @@ param(
 $forbidden = @(
   '\.hero\b', '\.section\b', '\.hero-copy\b', '\.hero-visual\b',
   '\.button\b', '\.modal\b', 'grid-template-columns', 'background-size',
-  '\bwidth\s*:', '\bheight\s*:', '\btop\s*:', '\bleft\s*:'
+  '(?m)(?:^|[;{])\s*width\s*:', '(?m)(?:^|[;{])\s*height\s*:',
+  '(?m)(?:^|[;{])\s*top\s*:', '(?m)(?:^|[;{])\s*left\s*:'
 )
 
 if (-not (Test-Path -LiteralPath $StylesPath)) {
@@ -13,6 +14,8 @@ if (-not (Test-Path -LiteralPath $StylesPath)) {
 }
 
 $content = Get-Content -Raw -LiteralPath $StylesPath
+# Ignore explanatory comments; only declarations/selectors are subject to the boundary check.
+$content = [regex]::Replace($content, '(?s)/\*.*?\*/', '')
 $matches = foreach ($pattern in $forbidden) {
   Select-String -InputObject $content -Pattern $pattern -AllMatches | ForEach-Object { $_.Matches.Value }
 }

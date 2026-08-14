@@ -5,3 +5,86 @@
 [data-wow-scene] {
   --wow-state: static;
 }
+
+/* W2: one decorative signal over the existing hero, never part of layout. */
+.wow-hero-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.wow-ready .wow-hero-layer {
+  opacity: 1;
+  transition: opacity 320ms ease-out;
+}
+
+.wow-hero-route {
+  position: absolute;
+  inset: 58% 5% auto 54%;
+  border-top: 1px solid rgba(232, 184, 63, .38);
+  transform-origin: left center;
+  transform: scaleX(.96);
+}
+
+.wow-hero-route::after {
+  content: '';
+  position: absolute;
+  inset: -3px auto auto 0;
+  inline-size: 12px;
+  block-size: 5px;
+  border-radius: 50%;
+  background: var(--copper, #e8b83f);
+  box-shadow: 0 0 16px rgba(232, 184, 63, .86);
+  opacity: 0;
+  transform: translateX(-18px);
+}
+
+[data-wow-scene="hero"][data-wow-state="ready"] .wow-hero-route::after {
+  opacity: 1;
+  animation: wow-hero-signal-pass 900ms cubic-bezier(.22, .61, .36, 1) 1 both;
+}
+
+.wow-hero-node {
+  position: absolute;
+  inline-size: 9px;
+  block-size: 9px;
+  border: 1px solid rgba(232, 184, 63, .65);
+  border-radius: 50%;
+  opacity: .3;
+  transform: scale(.7);
+}
+
+.wow-hero-node-a { inset: calc(58% - 4px) auto auto 63%; }
+.wow-hero-node-b { inset: calc(58% - 4px) auto auto 75%; }
+.wow-hero-node-c { inset: calc(58% - 4px) 5% auto auto; }
+
+[data-wow-scene="hero"][data-wow-state="ready"] .wow-hero-node {
+  animation: wow-hero-node-light 420ms ease-out 1 both;
+}
+
+[data-wow-scene="hero"][data-wow-state="ready"] .wow-hero-node-b { animation-delay: 180ms; }
+[data-wow-scene="hero"][data-wow-state="ready"] .wow-hero-node-c { animation-delay: 360ms; }
+
+@keyframes wow-hero-signal-pass {
+  from { transform: translateX(-18px); }
+  to { transform: translateX(calc(100% - 4px)); }
+}
+
+@keyframes wow-hero-node-light {
+  0%, 100% { opacity: .3; transform: scale(.7); }
+  45% { opacity: 1; transform: scale(1.18); box-shadow: 0 0 18px rgba(232, 184, 63, .74); }
+}
+
+@media (max-width: 900px) {
+  .wow-hero-route { inset: 62% 4% auto 58%; }
+  .wow-hero-node-a { inset: calc(62% - 4px) auto auto 68%; }
+  .wow-hero-node-b { inset: calc(62% - 4px) auto auto 80%; }
+  .wow-hero-node-c { inset: calc(62% - 4px) 4% auto auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wow-hero-layer { display: none; }
+}

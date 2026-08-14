@@ -19,7 +19,15 @@
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
-        entry.target.dataset.wowState = entry.isIntersecting ? 'ready' : 'idle';
+        if (entry.isIntersecting && !entry.target.dataset.wowPlayed) {
+          entry.target.dataset.wowState = 'ready';
+          window.setTimeout(() => {
+            entry.target.dataset.wowPlayed = 'true';
+            entry.target.dataset.wowState = 'complete';
+          }, 1050);
+        } else if (!entry.isIntersecting && !entry.target.dataset.wowPlayed) {
+          entry.target.dataset.wowState = 'idle';
+        }
       });
     }, { threshold: 0.18 });
 
