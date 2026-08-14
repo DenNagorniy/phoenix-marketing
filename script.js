@@ -27,20 +27,22 @@
     tilt.addEventListener('pointerleave', () => { tilt.style.transform = ''; });
   }
 
-  const heroVisual = document.querySelector('[data-hero-visual]');
-  const heroSteps = [...document.querySelectorAll('[data-hero-step]')];
-  if (heroVisual && heroSteps.length) {
-    const activateHeroStep = (step) => {
-      const index = step.dataset.heroStep || '0';
-      heroSteps.forEach((item) => item.classList.toggle('is-active', item === step));
-      heroVisual.dataset.activeStep = index;
+  const storyVisual = document.querySelector('[data-story-visual]');
+  const storySteps = [...document.querySelectorAll('[data-story-step]')];
+  const railItems = [...document.querySelectorAll('.hero-rail-item')];
+  if (storyVisual && storySteps.length) {
+    const activateStoryStep = (step) => {
+      const index = step.dataset.storyStep || '0';
+      storySteps.forEach((item) => item.classList.toggle('is-active', item === step));
+      railItems.forEach((item, itemIndex) => item.classList.toggle('is-active', String(itemIndex) === index));
+      storyVisual.dataset.activeStep = index;
     };
-    if (reduced || !('IntersectionObserver' in window)) activateHeroStep(heroSteps[0]);
+    if (reduced || !('IntersectionObserver' in window)) activateStoryStep(storySteps[0]);
     else {
-      const heroObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) activateHeroStep(entry.target);
+      const storyObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
+        if (entry.isIntersecting) activateStoryStep(entry.target);
       }), { rootMargin: '-42% 0px -42% 0px', threshold: 0 });
-      heroSteps.forEach((step) => heroObserver.observe(step));
+      storySteps.forEach((step) => storyObserver.observe(step));
     }
   }
 
