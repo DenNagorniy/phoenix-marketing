@@ -27,23 +27,6 @@
     tilt.addEventListener('pointerleave', () => { tilt.style.transform = ''; });
   }
 
-  const heroVisual = document.querySelector('[data-hero-visual]');
-  const heroSteps = [...document.querySelectorAll('[data-hero-step]')];
-  if (heroVisual && heroSteps.length) {
-    const activateHeroStep = (step) => {
-      const index = step.dataset.heroStep || '0';
-      heroSteps.forEach((item) => item.classList.toggle('is-active', item === step));
-      heroVisual.dataset.activeStep = index;
-    };
-    if (reduced || !('IntersectionObserver' in window)) activateHeroStep(heroSteps[0]);
-    else {
-      const heroObserver = new IntersectionObserver((entries) => entries.forEach((entry) => {
-        if (entry.isIntersecting) activateHeroStep(entry.target);
-      }), { rootMargin: '-42% 0px -42% 0px', threshold: 0 });
-      heroSteps.forEach((step) => heroObserver.observe(step));
-    }
-  }
-
   const quizModal = document.querySelector('#quiz-modal');
   const demoModal = document.querySelector('#demo-modal');
   const quizQuestion = document.querySelector('[data-quiz-question]');
