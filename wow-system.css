@@ -1,0 +1,7 @@
+/* Phoenix Marketing wow layer W1.
+   This file is intentionally non-visual until a later package passes its gate.
+   Only .wow-* and [data-wow-*] selectors may be added here. */
+
+[data-wow-scene] {
+  --wow-state: static;
+}
