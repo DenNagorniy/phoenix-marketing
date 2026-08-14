@@ -134,6 +134,15 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .hero{min-height:100svh;height:100svh;max-width:none;width:100vw;margin-left:calc(50% - 50vw);margin-right:calc(50% - 50vw);background-size:100% 100%;background-position:center center;background-repeat:no-repeat}
 @media(max-width:560px){.hero{height:auto;min-height:100svh;background-size:cover;background-position:center top}}
 
+/* Full-width process strip with readable descriptions. */
+.proof-strip{max-width:none;width:100%;padding:0 5vw;grid-template-columns:repeat(3,minmax(0,1fr))}
+.proof-strip div{align-items:flex-start;min-height:108px;padding:26px 28px 24px 0;gap:18px}
+.proof-strip div+div{padding-left:28px}
+.proof-strip div>div{display:block;min-height:0;padding:0;border:0}
+.proof-strip strong{display:block;font-size:13px;letter-spacing:.08em;text-transform:uppercase}
+.proof-strip p{max-width:290px;margin:9px 0 0;color:var(--dim);font-size:13px;line-height:1.45;letter-spacing:0;text-transform:none}
+@media(max-width:560px){.proof-strip{grid-template-columns:1fr;padding:0 20px}.proof-strip div,.proof-strip div+div{min-height:0;padding:18px 0;gap:16px}.proof-strip div>div{padding:0}.proof-strip p{max-width:none}}
+
 /* Full-bleed section rhythm: backgrounds reach the viewport, content stays contained. */
 .section{position:relative;isolation:isolate;background:transparent!important}
 .section::before{content:"";position:absolute;z-index:-1;top:0;bottom:0;left:50%;width:100vw;transform:translateX(-50%);background:var(--section-bg,var(--ink))}
