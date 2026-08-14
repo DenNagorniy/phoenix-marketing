@@ -190,3 +190,49 @@
   [data-wow-scene="mechanism"] .mechanism-grid::before,
   [data-wow-scene="mechanism"] .mechanism-grid::after { display: none; }
 }
+
+/* W5: local signal for the three real client entry situations. */
+[data-wow-scene="scenarios"] .scenario-card {
+  position: relative;
+  overflow: hidden;
+  transition: background-color 220ms ease-out, box-shadow 220ms ease-out;
+}
+
+[data-wow-scene="scenarios"] .scenario-card::after {
+  content: '';
+  position: absolute;
+  inset: auto 28px 22px;
+  border-top: 1px solid var(--copper, #e8b83f);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: opacity 220ms ease-out, transform 260ms ease-out;
+  pointer-events: none;
+}
+
+[data-wow-scene="scenarios"] .scenario-card:hover,
+[data-wow-scene="scenarios"] .scenario-card:focus-visible,
+[data-wow-scene="scenarios"] .scenario-card[data-wow-active="true"] {
+  background: #eee5d5;
+  box-shadow: inset 0 0 0 1px rgba(183, 137, 32, .42);
+  outline: none;
+}
+
+[data-wow-scene="scenarios"] .scenario-card:hover::after,
+[data-wow-scene="scenarios"] .scenario-card:focus-visible::after,
+[data-wow-scene="scenarios"] .scenario-card[data-wow-active="true"]::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="ready"] .diagnostic-points > div {
+  animation: wow-diagnostic-step 420ms ease-out 1 both;
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="ready"] .diagnostic-points > div:nth-child(2) { animation-delay: 120ms; }
+[data-wow-scene="diagnostic"][data-wow-state="ready"] .diagnostic-points > div:nth-child(3) { animation-delay: 240ms; }
+
+@keyframes wow-diagnostic-step {
+  from { opacity: .62; transform: translateX(-8px); }
+  to { opacity: 1; transform: translateX(0); }
+}

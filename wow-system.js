@@ -33,6 +33,20 @@
 
     scenes.forEach((scene) => observer.observe(scene));
 
+    const branches = Array.from(document.querySelectorAll('[data-wow-branch]'));
+    const activateBranch = (branch) => {
+      branches.forEach((item) => { item.dataset.wowActive = item === branch ? 'true' : 'false'; });
+    };
+    branches.forEach((branch) => {
+      branch.addEventListener('pointerup', () => activateBranch(branch));
+      branch.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          activateBranch(branch);
+        }
+      });
+    });
+
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         scenes.forEach((scene) => { scene.dataset.wowState = 'idle'; });
