@@ -9,7 +9,8 @@
     const query = new URLSearchParams(location.search);
     const mode = query.get('mode') || 'normal';
     const section = query.get('section');
-    const pageUrl = `/?qa=${Date.now()}`;
+    const siteRoot = new URL('../../', location.href);
+    const pageUrl = new URL(`?qa=${Date.now()}`, siteRoot).href;
     const frame = document.querySelector('#target');
     frame.style.width = `${Number(query.get('width')) || 1024}px`;
     frame.style.height = `${Number(query.get('height')) || 768}px`;
@@ -62,7 +63,7 @@
 
     if (mode === 'reduced') {
       const html = await fetch(pageUrl).then((response) => response.text());
-      const override = `<base href="${location.origin}/"><script>
+      const override = `<base href="${siteRoot.href}"><script>
         const nativeMatchMedia = window.matchMedia.bind(window);
         window.matchMedia = (media) => media.includes('prefers-reduced-motion')
           ? { matches: true, media, onchange: null, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent() { return false; } }
