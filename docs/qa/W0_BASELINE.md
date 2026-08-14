@@ -39,6 +39,10 @@
 - без `.wow-ready` базовый стиль демо оставляет секции видимыми (`opacity: 1`, `transform: none`);
 - после удаления карточного `tabindex` в дереве страницы нет искусственных tab-stop у механизма и сценариев;
 - `node --check wow-system.js`, `git diff --check` и `scripts/check-wow-boundaries.ps1` проходят.
+- no-JS проверен в sandbox без `allow-scripts`: `.wow-ready` отсутствует, а весь содержательный demo-stack видим.
+- reduced-motion проверен детерминированным runtime-режимом: активных анимаций `0`, hero-декорация скрыта, demo-stack видим.
+- На 390×844 нет горизонтального overflow и интерактивных целей меньше 44 px.
+- На 768×1024 механизм использует сетку 2×4 и непрерывную четырёхрядную трассу.
 
 ## Baseline correction
 
@@ -46,4 +50,4 @@
 
 ## Gate W0
 
-**Baseline обновлён для corrective pass.** W0–W7 считаются готовыми к повторному review только после просмотра этого evidence и отдельной проверки reduced-motion/no-JS.
+**Local acceptance PASS.** W0–W7 закрыты локально; незакрытым остаётся только повтор опубликованного smoke-test после отдельного разрешения на push/deploy.

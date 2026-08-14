@@ -35,6 +35,11 @@
     function activateDemo() {
       const stack = document.querySelector('.demo-stack');
       if (!stack) return;
+      if (document.documentElement.dataset.wowStopped === 'true') {
+        stack.dataset.wowPlayed = 'true';
+        stack.dataset.wowState = 'complete';
+        return;
+      }
       stack.dataset.wowState = 'ready';
       stack.dataset.wowPlayed = 'true';
       window.setTimeout(() => { stack.dataset.wowState = 'complete'; }, 1050);
@@ -65,12 +70,6 @@
     };
     branches.forEach((branch) => {
       branch.addEventListener('pointerup', () => activateBranch(branch));
-      branch.addEventListener('keydown', (event) => {
-        if (event.key === 'Enter' || event.key === ' ') {
-          event.preventDefault();
-          activateBranch(branch);
-        }
-      });
     });
 
     document.addEventListener('visibilitychange', () => {

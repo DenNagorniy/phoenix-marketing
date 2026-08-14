@@ -1,0 +1,77 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>WOW runtime QA harness</title>
+<style>html,body{margin:0;background:#777}iframe{display:block;border:0;background:#fff}</style>
+<iframe id="target" title="WOW runtime test"></iframe>
+<pre id="report" hidden></pre>
+<script>
+  (async () => {
+    const query = new URLSearchParams(location.search);
+    const mode = query.get('mode') || 'normal';
+    const section = query.get('section');
+    const pageUrl = `/?qa=${Date.now()}`;
+    const frame = document.querySelector('#target');
+    frame.style.width = `${Number(query.get('width')) || 1024}px`;
+    frame.style.height = `${Number(query.get('height')) || 768}px`;
+    if (section) frame.addEventListener('load', () => { frame.contentWindow.location.hash = section; });
+    frame.addEventListener('load', () => {
+      window.setTimeout(() => {
+        const childWindow = frame.contentWindow;
+        const childDocument = frame.contentDocument;
+        const mechanism = childDocument.querySelector('.mechanism-grid');
+        const route = childWindow.getComputedStyle(mechanism, '::before');
+        const demos = [...childDocument.querySelectorAll('.demo-stack > section')];
+        const smallTargets = [...childDocument.querySelectorAll('a,button,input,select,textarea')].filter((element) => {
+          const rect = element.getBoundingClientRect();
+          const style = childWindow.getComputedStyle(element);
+          return style.display !== 'none' && style.visibility !== 'hidden' && rect.width > 0 && rect.height > 0 && (rect.width < 44 || rect.height < 44);
+        });
+        document.querySelector('#report').textContent = JSON.stringify({
+          mode,
+          innerWidth: childWindow.innerWidth,
+          innerHeight: childWindow.innerHeight,
+          scrollWidth: childDocument.documentElement.scrollWidth,
+          wowReady: childDocument.documentElement.classList.contains('wow-ready'),
+          reducedMotion: childWindow.matchMedia('(prefers-reduced-motion: reduce)').matches,
+          heroDisplay: childWindow.getComputedStyle(childDocument.querySelector('.wow-hero-layer')).display,
+          mechanismColumns: childWindow.getComputedStyle(mechanism).gridTemplateColumns,
+          mechanismRouteHeight: route.height,
+          mechanismRouteDisplay: route.display,
+          mechanismRouteBackground: route.backgroundImage,
+          demoSectionsVisible: demos.every((element) => {
+            const style = childWindow.getComputedStyle(element);
+            return style.opacity === '1' && style.transform === 'none';
+          }),
+          artificialCardTabs: childDocument.querySelectorAll('article[tabindex]').length,
+          smallTargetCount: smallTargets.length,
+          smallTargets: smallTargets.map((element) => ({
+            label: (element.textContent || element.getAttribute('aria-label') || '').trim().slice(0, 60),
+            width: Math.round(element.getBoundingClientRect().width),
+            height: Math.round(element.getBoundingClientRect().height)
+          })),
+          activeAnimations: childDocument.getAnimations().length
+        });
+      }, 500);
+    });
+
+    if (mode === 'nojs') {
+      frame.setAttribute('sandbox', 'allow-same-origin');
+      frame.src = pageUrl;
+      return;
+    }
+
+    if (mode === 'reduced') {
+      const html = await fetch(pageUrl).then((response) => response.text());
+      const override = `<base href="${location.origin}/"><script>
+        const nativeMatchMedia = window.matchMedia.bind(window);
+        window.matchMedia = (media) => media.includes('prefers-reduced-motion')
+          ? { matches: true, media, onchange: null, addListener() {}, removeListener() {}, addEventListener() {}, removeEventListener() {}, dispatchEvent() { return false; } }
+          : nativeMatchMedia(media);
+      <\/script>`;
+      frame.srcdoc = html.replace('<head>', `<head>${override}`);
+      return;
+    }
+
+    frame.src = pageUrl;
+  })();
+</script>
