@@ -143,3 +143,19 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 .mechanism-card p{color:#514b43}
 .scenario-intro,.scenario-card p,.section-note,.diagnostic-points p,.fit-row p{color:#514b43}
 .diagnostic-points b,.fit-row b,.scenario-card h3{color:#171512}
+
+/* P0 wow effect: the visual stays present while the acquisition story advances. */
+.hero{min-height:210svh;height:auto;grid-template-columns:minmax(320px,.82fr) minmax(420px,1.18fr);align-items:start}
+.hero-copy{align-self:start;padding-bottom:12svh}
+.hero-visual{position:sticky;top:112px;height:calc(100svh - 150px);min-height:0;align-self:start;margin-top:4vh;z-index:2}
+.hero-steps{display:grid;gap:18vh;margin-top:22vh;max-width:520px}
+.hero-step{min-height:42vh;display:grid;align-content:center;gap:10px;padding:24px 0;border-top:1px solid rgba(233,228,216,.22);opacity:.3;transform:translateY(18px);transition:opacity .35s ease,transform .35s ease}
+.hero-step.is-active{opacity:1;transform:none}
+.hero-step span{font:10px var(--mono);letter-spacing:.12em;color:var(--copper)}
+.hero-step strong{font:400 clamp(32px,4vw,54px)/.98 var(--serif);letter-spacing:-.04em}
+.hero-step p{max-width:360px;margin:0;color:var(--dim);font-size:15px;line-height:1.5}
+.hero-visual[data-active-step="1"] .signal path{stroke-dashoffset:210}
+.hero-visual[data-active-step="2"] .signal path{stroke-dashoffset:0}
+.hero-visual .signal path{stroke-dasharray:900;stroke-dashoffset:420;transition:stroke-dashoffset .8s ease}
+.hero-visual[data-active-step="1"] .modules rect:nth-child(-n+3),.hero-visual[data-active-step="2"] .modules rect{stroke:#e8b83f;filter:drop-shadow(0 0 7px rgba(232,184,63,.38))}
+@media(max-width:900px){.hero{min-height:auto;grid-template-columns:1fr;align-items:initial}.hero-visual{position:relative;top:auto;height:auto;min-height:390px;margin-top:26px;order:-1}.hero-copy{padding-bottom:0}.hero-steps{margin-top:42px;gap:0}.hero-step{min-height:240px;padding:34px 0;opacity:1;transform:none}.hero-visual .signal path{stroke-dashoffset:0}}
