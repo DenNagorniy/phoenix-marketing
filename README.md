@@ -29,8 +29,8 @@
 
 ## Deployment
 
-Целевой способ публикации — GitHub Pages. Deployment workflow добавляется отдельным bounded packet после наполнения сайта.
+Сайт публикуется через GitHub Pages. Workflow `.github/workflows/deploy-pages.yml` запускается автоматически после push в `main`.
 
 ## Статус
 
-SCAFFOLD ONLY — структура подготовлена, сайт ещё не наполнен.
+PUBLIC SITE — production-витрина публикуется из ветки `main` через GitHub Actions.

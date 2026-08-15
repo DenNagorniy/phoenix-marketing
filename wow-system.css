@@ -393,3 +393,820 @@ html[data-wow-stopped="true"] .wow-hero-route::after,
 html[data-wow-stopped="true"] [data-wow-scene="process"]::after,
 html[data-wow-stopped="true"] [data-wow-scene="mechanism"] .mechanism-grid::after,
 html[data-wow-stopped="true"] [data-wow-scene="cta"] .offer-card::before { animation: none !important; }
+
+/* W8: visual-authority pass. The signal must read without being searched for. */
+.wow-hero-layer::before {
+  content: '';
+  position: absolute;
+  inset: 42% 2% 24% 45%;
+  background: radial-gradient(ellipse at center, rgba(232, 184, 63, .34), rgba(232, 184, 63, .08) 42%, transparent 72%);
+  filter: blur(14px);
+  opacity: 0;
+  transform: scale(.72);
+  pointer-events: none;
+}
+
+.wow-hero-route {
+  border-top-width: 2px;
+  border-top-color: rgba(247, 200, 66, .82);
+  box-shadow: 0 0 10px rgba(232, 184, 63, .46), 0 0 28px rgba(232, 184, 63, .18);
+}
+
+.wow-hero-route::after {
+  inline-size: 20px;
+  block-size: 9px;
+  box-shadow: 0 0 10px rgba(247, 200, 66, 1), 0 0 30px rgba(232, 184, 63, .9), 0 0 58px rgba(232, 184, 63, .55);
+}
+
+[data-wow-scene="hero"][data-wow-state="ready"]::before {
+  animation: wow-hero-field 1100ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="hero"][data-wow-state="active"]::before {
+  opacity: .72;
+  transform: scale(1);
+}
+
+[data-wow-scene="hero"][data-wow-state="active"] .wow-hero-route::after {
+  animation: wow-hero-signal-loop var(--wow-hero-duration, 2.2s) linear 3 both;
+}
+
+[data-wow-scene="hero"][data-wow-state="active"] .wow-hero-node {
+  opacity: .92;
+  transform: scale(1);
+  background: rgba(247, 200, 66, .22);
+  box-shadow: 0 0 18px rgba(232, 184, 63, .82);
+}
+
+[data-wow-scene="hero"][data-wow-state="ready"] .wow-hero-route::after {
+  animation: none;
+  opacity: 0;
+}
+
+[data-wow-scene="hero"][data-wow-state="active"]::before {
+  animation: wow-hero-field-breathe 3.6s ease-in-out 3 alternate both;
+}
+
+@keyframes wow-hero-field {
+  0% { opacity: 0; transform: scale(.72); }
+  55% { opacity: 1; transform: scale(1.08); }
+  100% { opacity: .72; transform: scale(1); }
+}
+
+@keyframes wow-hero-field-breathe {
+  from { opacity: .52; transform: scale(.94); }
+  to { opacity: .82; transform: scale(1.06); }
+}
+
+@keyframes wow-hero-signal-visible {
+  from { opacity: 0; inset-inline-start: 0; transform: none; }
+  12% { opacity: 1; }
+  to { opacity: 1; inset-inline-start: calc(100% - 20px); transform: none; }
+}
+
+@keyframes wow-hero-signal-loop {
+  0% { opacity: 0; inset-inline-start: 0; transform: none; }
+  12% { opacity: 1; }
+  70% { opacity: 1; inset-inline-start: calc(100% - 20px); transform: none; }
+  84%, 100% { opacity: 0; inset-inline-start: calc(100% - 20px); transform: none; }
+}
+
+[data-wow-scene="process"]::before {
+  border-top-width: 2px;
+  box-shadow: 0 0 12px rgba(232, 184, 63, .42);
+}
+
+[data-wow-scene="process"]::after {
+  inline-size: 16px;
+  block-size: 8px;
+  box-shadow: 0 0 12px rgba(247, 200, 66, .94), 0 0 28px rgba(232, 184, 63, .58);
+}
+
+[data-wow-scene="process"] > div {
+  transition: background-color 420ms ease-out, box-shadow 420ms ease-out, transform 420ms ease-out;
+}
+
+[data-wow-scene="process"][data-wow-state="ready"] > div {
+  animation: wow-process-stage-ignite 620ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="process"][data-wow-state="ready"] > div:nth-child(2) { animation-delay: 140ms; }
+[data-wow-scene="process"][data-wow-state="ready"] > div:nth-child(3) { animation-delay: 280ms; }
+
+[data-wow-scene="process"][data-wow-state="active"]::before,
+[data-wow-scene="process"][data-wow-state="active"]::after { opacity: 1; }
+
+[data-wow-scene="process"][data-wow-state="active"]::after {
+  animation: wow-process-signal-pass 3.8s cubic-bezier(.22, .61, .36, 1) infinite;
+}
+
+[data-wow-scene="process"][data-wow-state="active"] > div {
+  background: rgba(232, 184, 63, .055);
+  box-shadow: inset 0 -2px 0 rgba(232, 184, 63, .34);
+}
+
+@keyframes wow-process-stage-ignite {
+  0% { transform: translateY(12px); background-color: transparent; }
+  55% { transform: translateY(-3px); background-color: rgba(232, 184, 63, .13); }
+  100% { transform: none; background-color: rgba(232, 184, 63, .055); }
+}
+
+.wow-ready [data-wow-scene="mechanism"] .mechanism-grid::before {
+  border-top-width: 2px;
+  border-right-width: 2px;
+  border-bottom-width: 2px;
+  border-color: rgba(183, 137, 32, .72);
+  filter: drop-shadow(0 0 7px rgba(183, 137, 32, .46));
+}
+
+.wow-ready [data-wow-scene="mechanism"] .mechanism-grid::after {
+  inline-size: 15px;
+  block-size: 10px;
+  box-shadow: 0 0 12px rgba(232, 184, 63, 1), 0 0 30px rgba(232, 184, 63, .72);
+}
+
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card {
+  animation: wow-mechanism-card-ignite 620ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(2) { animation-delay: 90ms; }
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(3) { animation-delay: 180ms; }
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(4) { animation-delay: 270ms; }
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(5) { animation-delay: 630ms; }
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(6) { animation-delay: 540ms; }
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(7) { animation-delay: 450ms; }
+[data-wow-scene="mechanism"][data-wow-state="ready"] .mechanism-card:nth-child(8) { animation-delay: 360ms; }
+
+[data-wow-scene="mechanism"][data-wow-state="active"] .mechanism-card {
+  background: linear-gradient(145deg, rgba(247, 240, 228, .96), rgba(232, 223, 210, .9));
+  box-shadow: inset 0 0 0 1px rgba(183, 137, 32, .2);
+}
+
+[data-wow-scene="mechanism"][data-wow-state="active"] .mechanism-grid::after {
+  animation: wow-mechanism-route var(--wow-mechanism-duration, 7s) linear infinite;
+}
+
+@media (max-width: 900px) and (min-width: 561px) {
+  [data-wow-scene="mechanism"][data-wow-state="active"] .mechanism-grid::after {
+    animation-name: wow-mechanism-route-tablet;
+    animation-duration: var(--wow-mechanism-duration, 7s);
+  }
+}
+
+[data-wow-scene="mechanism"] .mechanism-card .number {
+  transition: color 320ms ease-out, text-shadow 320ms ease-out;
+}
+
+[data-wow-scene="mechanism"][data-wow-state="active"] .mechanism-card .number {
+  color: #9c6813;
+  text-shadow: 0 0 14px rgba(232, 184, 63, .55);
+}
+
+@keyframes wow-mechanism-card-ignite {
+  0% { transform: translateY(16px); box-shadow: inset 0 0 0 1px transparent; }
+  55% { transform: translateY(-4px); box-shadow: inset 0 0 0 2px rgba(183, 137, 32, .72), 0 10px 30px rgba(89, 57, 19, .13); }
+  100% { transform: none; box-shadow: inset 0 0 0 1px rgba(183, 137, 32, .2); }
+}
+
+[data-wow-scene="diagnostic"] .diagnostic-layout {
+  position: relative;
+  transition: background-color 520ms ease-out, box-shadow 520ms ease-out, transform 520ms ease-out;
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="ready"] .diagnostic-layout {
+  animation: wow-panel-ignite 720ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="active"] .diagnostic-layout {
+  background: linear-gradient(90deg, rgba(232, 184, 63, .1), transparent 62%);
+  box-shadow: inset 4px 0 0 rgba(232, 184, 63, .78), -22px 0 48px rgba(232, 184, 63, .08);
+}
+
+[data-wow-scene="scenarios"] .scenario-grid::before {
+  border-top-width: 2px;
+  border-top-color: rgba(183, 137, 32, .68);
+  box-shadow: 0 0 10px rgba(183, 137, 32, .36);
+  opacity: .28;
+  transition: opacity 420ms ease-out;
+}
+
+[data-wow-scene="scenarios"] .scenario-grid::after {
+  inline-size: 15px;
+  block-size: 10px;
+  box-shadow: 0 0 12px rgba(232, 184, 63, 1), 0 0 28px rgba(232, 184, 63, .7);
+}
+
+[data-wow-scene="scenarios"] .scenario-card::before { border-left-width: 2px; }
+
+[data-wow-scene="scenarios"][data-wow-state="ready"] .scenario-card {
+  animation: wow-scenario-card-ignite 620ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="scenarios"][data-wow-state="ready"] .scenario-card:nth-child(2) { animation-delay: 150ms; }
+[data-wow-scene="scenarios"][data-wow-state="ready"] .scenario-card:nth-child(3) { animation-delay: 300ms; }
+
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-grid::before { opacity: 1; }
+
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-grid::after {
+  animation: wow-scenario-source 3.6s cubic-bezier(.22, .61, .36, 1) infinite;
+}
+
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-card {
+  background: linear-gradient(160deg, #f0e7d8, #e8dfd2 72%);
+  box-shadow: inset 0 3px 0 rgba(183, 137, 32, .34);
+}
+
+@keyframes wow-scenario-card-ignite {
+  0% { transform: translateY(18px); filter: brightness(.94); }
+  60% { transform: translateY(-5px); filter: brightness(1.08); }
+  100% { transform: none; filter: none; }
+}
+
+[data-wow-scene="offers"] .offer-level,
+[data-wow-scene="fit"] .fit-row,
+[data-wow-scene="proof"] .proof-item {
+  transition: transform 480ms cubic-bezier(.22, .61, .36, 1), background-color 480ms ease-out, border-color 480ms ease-out, box-shadow 480ms ease-out;
+}
+
+[data-wow-scene="offers"][data-wow-state="ready"] .offer-level,
+[data-wow-scene="proof"][data-wow-state="ready"] .proof-item {
+  animation: wow-dark-card-ignite 620ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="offers"][data-wow-state="ready"] .offer-level:nth-child(2),
+[data-wow-scene="proof"][data-wow-state="ready"] .proof-item:nth-child(2) { animation-delay: 140ms; }
+
+[data-wow-scene="offers"][data-wow-state="ready"] .offer-level:nth-child(3),
+[data-wow-scene="proof"][data-wow-state="ready"] .proof-item:nth-child(3) { animation-delay: 280ms; }
+
+[data-wow-scene="offers"][data-wow-state="active"] .offer-level,
+[data-wow-scene="proof"][data-wow-state="active"] .proof-item {
+  border-color: rgba(232, 184, 63, .48);
+  background-color: rgba(232, 184, 63, .055);
+  box-shadow: inset 0 0 0 1px rgba(232, 184, 63, .08), 0 14px 36px rgba(0, 0, 0, .16);
+}
+
+[data-wow-scene="proof"][data-wow-state="active"] .proof-item {
+  background-color: #f3eadb;
+  color: #171512;
+  box-shadow: inset 4px 0 0 rgba(232, 184, 63, .7), 0 14px 36px rgba(0, 0, 0, .18);
+}
+
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row {
+  animation: wow-fit-row-ignite 520ms cubic-bezier(.22, .61, .36, 1) both;
+}
+
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row:nth-child(2) { animation-delay: 70ms; }
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row:nth-child(3) { animation-delay: 140ms; }
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row:nth-child(4) { animation-delay: 210ms; }
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row:nth-child(5) { animation-delay: 280ms; }
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row:nth-child(6) { animation-delay: 350ms; }
+
+[data-wow-scene="fit"][data-wow-state="active"] .fit-row {
+  background: linear-gradient(90deg, rgba(232, 184, 63, .08), transparent 68%);
+  box-shadow: inset 3px 0 0 rgba(232, 184, 63, .52);
+}
+
+@keyframes wow-dark-card-ignite {
+  0% { transform: translateY(18px) scale(.98); box-shadow: inset 0 0 0 1px transparent; }
+  58% { transform: translateY(-5px) scale(1.01); box-shadow: inset 0 0 0 2px rgba(232, 184, 63, .62), 0 16px 42px rgba(0, 0, 0, .25); }
+  100% { transform: none; box-shadow: inset 0 0 0 1px rgba(232, 184, 63, .08), 0 14px 36px rgba(0, 0, 0, .16); }
+}
+
+@keyframes wow-fit-row-ignite {
+  0% { transform: translateX(-18px); background-color: transparent; }
+  60% { transform: translateX(5px); background-color: rgba(232, 184, 63, .13); }
+  100% { transform: none; background-color: transparent; }
+}
+
+@keyframes wow-panel-ignite {
+  0% { transform: translateY(18px); box-shadow: inset 4px 0 0 transparent; }
+  60% { transform: translateY(-4px); box-shadow: inset 4px 0 0 rgba(232, 184, 63, 1), -22px 0 48px rgba(232, 184, 63, .14); }
+  100% { transform: none; box-shadow: inset 4px 0 0 rgba(232, 184, 63, .78), -22px 0 48px rgba(232, 184, 63, .08); }
+}
+
+[data-wow-scene="cta"][data-wow-state="ready"] .offer-card,
+[data-wow-scene="cta"][data-wow-state="active"] .offer-card {
+  border-color: rgba(232, 184, 63, .72);
+  background: linear-gradient(150deg, rgba(232, 184, 63, .12), #181411 58%);
+  box-shadow: 0 0 0 1px rgba(232, 184, 63, .16), 0 20px 64px rgba(232, 184, 63, .12);
+}
+
+[data-wow-scene="cta"][data-wow-state="active"] .offer-card::after {
+  border-top-width: 2px;
+  opacity: 1;
+  box-shadow: 0 0 12px rgba(232, 184, 63, .48);
+}
+
+@media (max-width: 560px) {
+  [data-wow-scene="process"] > div,
+  [data-wow-scene="mechanism"] .mechanism-card,
+  [data-wow-scene="scenarios"] .scenario-card,
+  [data-wow-scene="offers"] .offer-level,
+  [data-wow-scene="fit"] .fit-row,
+  [data-wow-scene="proof"] .proof-item { animation: none !important; transform: none !important; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wow-hero-layer::before,
+  [data-wow-scene="process"] > div,
+  [data-wow-scene="mechanism"] .mechanism-card,
+  [data-wow-scene="scenarios"] .scenario-card,
+  [data-wow-scene="diagnostic"] .diagnostic-layout,
+  [data-wow-scene="offers"] .offer-level,
+  [data-wow-scene="fit"] .fit-row,
+  [data-wow-scene="proof"] .proof-item { animation: none !important; transform: none !important; transition: none !important; }
+}
+
+/* W4 feedback alignment: the signal now explains the page instead of decorating it. */
+.wow-hero-route {
+  inset: 60% 16.5% auto 43.5%;
+}
+
+.wow-hero-node {
+  inline-size: 15px;
+  block-size: 15px;
+  border: 1px solid rgba(247, 200, 66, .92);
+  background: transparent;
+}
+
+.wow-hero-node-a { inset: calc(60% - 7px) auto auto 56%; }
+.wow-hero-node-b { inset: calc(60% - 7px) auto auto 70%; }
+.wow-hero-node-c { inset: calc(60% - 7px) 16% auto auto; }
+
+@keyframes wow-hero-signal-visible {
+  from { opacity: 0; inset-inline-start: 0; transform: none; }
+  12% { opacity: 1; }
+  to { opacity: 1; inset-inline-start: calc(100% - 9px); transform: none; }
+}
+
+@keyframes wow-hero-signal-loop {
+  0% { opacity: 0; inset-inline-start: 0; transform: none; }
+  12% { opacity: 1; }
+  70% { opacity: 1; inset-inline-start: calc(100% - 9px); transform: none; }
+  84%, 100% { opacity: 0; inset-inline-start: calc(100% - 9px); transform: none; }
+}
+
+[data-wow-scene="hero"][data-wow-state="active"] .wow-hero-node {
+  background: transparent;
+  animation: wow-signal-ripple var(--wow-hero-duration, 2.2s) ease-out 3 both;
+}
+
+[data-wow-scene="hero"][data-wow-state="active"] .wow-hero-node-b { animation-delay: var(--wow-hero-node-b-delay, .44s); }
+[data-wow-scene="hero"][data-wow-state="active"] .wow-hero-node-c { animation-delay: var(--wow-hero-node-c-delay, .99s); }
+
+@keyframes wow-signal-ripple {
+  0%, 6% { opacity: 0; transform: scale(.42); box-shadow: 0 0 0 0 rgba(247, 200, 66, .38); }
+  16% { opacity: .95; transform: scale(1); box-shadow: 0 0 0 2px rgba(247, 200, 66, .22); }
+  42% { opacity: 0; transform: scale(3.5); box-shadow: 0 0 0 8px rgba(247, 200, 66, 0); }
+  43%, 100% { opacity: 0; transform: scale(3.5); }
+}
+
+[data-wow-scene="process"] {
+  background: #211b0d;
+  padding-inline: 0;
+}
+
+[data-wow-scene="process"] > div {
+  background: transparent;
+  position: relative;
+}
+
+[data-wow-scene="process"] > div:first-child { padding-inline-start: 5vw; }
+[data-wow-scene="process"] > div:last-child { padding-inline-end: 5vw; }
+
+[data-wow-scene="process"]::before {
+  inset: auto calc(50% - 50vw) 13px;
+}
+
+[data-wow-scene="process"]::after {
+  inset-inline-start: 0;
+  inset-block-end: 9px;
+}
+
+[data-wow-scene="process"][data-wow-state="active"] > div {
+  background: transparent;
+  transform-origin: center bottom;
+}
+
+[data-wow-scene="process"][data-wow-state="active"]::after {
+  animation: wow-process-edge-pass var(--wow-process-duration, 4s) linear infinite;
+}
+
+@keyframes wow-process-edge-pass {
+  0% { opacity: 0; transform: translateX(-9px); }
+  2% { opacity: 1; }
+  98% { opacity: 1; transform: translateX(calc(100vw - 9px)); }
+  100% { opacity: 0; transform: translateX(calc(100vw - 9px)); }
+}
+
+[data-wow-scene="process"][data-wow-state="ready"] > div,
+.wow-ready [data-wow-scene="process"][data-wow-state="ready"]::after {
+  animation: none;
+}
+
+[data-wow-scene="process"][data-wow-state="active"] > div:nth-child(1) { animation: wow-process-cell-1 var(--wow-process-duration, 4s) linear infinite; }
+[data-wow-scene="process"][data-wow-state="active"] > div:nth-child(2) { animation: wow-process-cell-2 var(--wow-process-duration, 4s) linear infinite; }
+[data-wow-scene="process"][data-wow-state="active"] > div:nth-child(3) { animation: wow-process-cell-3 var(--wow-process-duration, 4s) linear infinite; }
+
+@keyframes wow-process-cell-1 {
+  0%, 2%, 34%, 100% { background-color: transparent; transform: none; box-shadow: none; }
+  18% { background-color: rgba(232, 184, 63, .17); transform: scale(1.018); box-shadow: inset 0 -2px 0 rgba(247, 200, 66, .7), 0 0 30px rgba(232, 184, 63, .09); }
+}
+
+@keyframes wow-process-cell-2 {
+  0%, 34%, 66%, 100% { background-color: transparent; transform: none; box-shadow: none; }
+  50% { background-color: rgba(232, 184, 63, .17); transform: scale(1.018); box-shadow: inset 0 -2px 0 rgba(247, 200, 66, .7), 0 0 30px rgba(232, 184, 63, .09); }
+}
+
+@keyframes wow-process-cell-3 {
+  0%, 66%, 98%, 100% { background-color: transparent; transform: none; box-shadow: none; }
+  82% { background-color: rgba(232, 184, 63, .17); transform: scale(1.018); box-shadow: inset 0 -2px 0 rgba(247, 200, 66, .7), 0 0 30px rgba(232, 184, 63, .09); }
+}
+
+@media (max-width: 560px) {
+  [data-wow-scene="process"] > div,
+  [data-wow-scene="process"] > div + div {
+    padding-inline: 20px;
+  }
+}
+
+@media (min-width: 901px) {
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(1) { grid-column: 1; grid-row: 1; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(2) { grid-column: 2; grid-row: 1; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(3) { grid-column: 3; grid-row: 1; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(4) { grid-column: 4; grid-row: 1; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(5) { grid-column: 4; grid-row: 2; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(6) { grid-column: 3; grid-row: 2; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(7) { grid-column: 2; grid-row: 2; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(8) { grid-column: 1; grid-row: 2; }
+
+  .wow-ready [data-wow-scene="mechanism"] .mechanism-grid::before {
+    inset: 10px -14px auto 0;
+  }
+}
+
+@keyframes wow-mechanism-route {
+  0% { inset-inline-start: 0; inset-block-start: 7px; }
+  45% { inset-inline-start: calc(100% + 6px); inset-block-start: 7px; }
+  54% { inset-inline-start: calc(100% + 6px); inset-block-start: calc(50% + 7px); }
+  100% { inset-inline-start: 0; inset-block-start: calc(50% + 7px); }
+}
+
+@media (max-width: 900px) and (min-width: 561px) {
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(1) { grid-column: 1; grid-row: 1; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(2) { grid-column: 2; grid-row: 1; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(3) { grid-column: 2; grid-row: 2; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(4) { grid-column: 1; grid-row: 2; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(5) { grid-column: 1; grid-row: 3; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(6) { grid-column: 2; grid-row: 3; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(7) { grid-column: 2; grid-row: 4; }
+  [data-wow-scene="mechanism"] .mechanism-card:nth-child(8) { grid-column: 1; grid-row: 4; }
+}
+
+[data-wow-scene="diagnostic"] .diagnostic-layout::before {
+  content: '';
+  position: absolute;
+  inset: 8px 50% 8px auto;
+  border-left: 2px solid rgba(232, 184, 63, .7);
+  box-shadow: 0 0 12px rgba(232, 184, 63, .28);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: opacity 360ms ease-out, transform 720ms cubic-bezier(.22, .61, .36, 1);
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="active"] .diagnostic-layout {
+  box-shadow: none;
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="ready"] .diagnostic-layout {
+  animation-name: wow-diagnostic-enter;
+}
+
+@keyframes wow-diagnostic-enter {
+  0% { opacity: .72; transform: translateY(18px); }
+  62% { opacity: 1; transform: translateY(-4px); }
+  100% { opacity: 1; transform: none; }
+}
+
+[data-wow-scene="diagnostic"][data-wow-state="ready"] .diagnostic-layout::before,
+[data-wow-scene="diagnostic"][data-wow-state="active"] .diagnostic-layout::before {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+[data-wow-branch] {
+  cursor: pointer;
+}
+
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-grid::after {
+  animation: wow-scenario-source var(--wow-scenarios-duration, 3.3s) linear 1 both;
+}
+
+[data-wow-scene="scenarios"][data-wow-state="ready"] .scenario-card,
+.wow-ready [data-wow-scene="scenarios"][data-wow-state="ready"] .scenario-grid::after {
+  animation: none;
+}
+
+@keyframes wow-scenario-source {
+  0% { opacity: 0; inset-inline-start: 0; }
+  2% { opacity: 1; inset-inline-start: 0; }
+  98% { opacity: 1; inset-inline-start: calc(100% - 9px); }
+  100% { opacity: 0; inset-inline-start: calc(100% - 9px); }
+}
+
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-card:nth-child(1) { animation: wow-scenario-card-1 var(--wow-scenarios-duration, 3.3s) linear 1 both; }
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-card:nth-child(2) { animation: wow-scenario-card-2 var(--wow-scenarios-duration, 3.3s) linear 1 both; }
+[data-wow-scene="scenarios"][data-wow-state="active"] .scenario-card:nth-child(3) { animation: wow-scenario-card-3 var(--wow-scenarios-duration, 3.3s) linear 1 both; }
+
+[data-wow-scene="scenarios"] .scenario-card:hover,
+[data-wow-scene="scenarios"] .scenario-card:focus-within {
+  animation: none !important;
+  transform: translateY(-8px) scale(1.025);
+  box-shadow: inset 0 0 0 2px rgba(183, 137, 32, .56), 0 18px 44px rgba(68, 43, 13, .2);
+  z-index: 4;
+}
+
+@keyframes wow-scenario-card-1 {
+  0%, 2%, 34%, 100% { transform: none; box-shadow: inset 0 3px 0 rgba(183, 137, 32, .34); }
+  18% { transform: translateY(-6px) scale(1.025); box-shadow: inset 0 3px 0 rgba(232, 184, 63, .9), 0 15px 36px rgba(89, 57, 19, .18); }
+}
+
+@keyframes wow-scenario-card-2 {
+  0%, 34%, 66%, 100% { transform: none; box-shadow: inset 0 3px 0 rgba(183, 137, 32, .34); }
+  50% { transform: translateY(-6px) scale(1.025); box-shadow: inset 0 3px 0 rgba(232, 184, 63, .9), 0 15px 36px rgba(89, 57, 19, .18); }
+}
+
+@keyframes wow-scenario-card-3 {
+  0%, 66%, 98%, 100% { transform: none; box-shadow: inset 0 3px 0 rgba(183, 137, 32, .34); }
+  82% { transform: translateY(-6px) scale(1.025); box-shadow: inset 0 3px 0 rgba(232, 184, 63, .9), 0 15px 36px rgba(89, 57, 19, .18); }
+}
+
+[data-wow-scene="offers"] .offer-levels {
+  position: relative;
+}
+
+[data-wow-scene="offers"] .offer-levels::before {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset: -26px 0 auto;
+  border-top: 2px solid rgba(232, 184, 63, .62);
+  box-shadow: 0 0 10px rgba(232, 184, 63, .28);
+  pointer-events: none;
+}
+
+[data-wow-scene="offers"] .offer-levels::after {
+  content: '';
+  position: absolute;
+  z-index: 3;
+  inset: -30px auto auto 0;
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: #f7c842;
+  box-shadow: 0 0 12px rgba(247, 200, 66, 1), 0 0 28px rgba(232, 184, 63, .72);
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-wow-scene="offers"] .offer-levels::before,
+[data-wow-scene="offers"] .offer-levels::after,
+[data-wow-scene="offers"] .wow-grid-ripple {
+  display: none;
+}
+
+[data-wow-scene="offers"][data-wow-state="active"] .offer-levels::after {
+  animation: wow-offers-source 4.5s linear infinite;
+}
+
+@keyframes wow-offers-source {
+  0% { opacity: 0; inset-inline-start: 0; }
+  5% { opacity: 1; }
+  90% { opacity: 1; inset-inline-start: calc(100% - 9px); }
+  96%, 100% { opacity: 0; inset-inline-start: calc(100% - 9px); }
+}
+
+[data-wow-scene="offers"][data-wow-state="active"] .offer-level:nth-child(1) { animation: wow-offer-card-1 4.5s linear infinite; }
+[data-wow-scene="offers"][data-wow-state="active"] .offer-level:nth-child(2) { animation: wow-offer-card-2 4.5s linear infinite; }
+[data-wow-scene="offers"][data-wow-state="active"] .offer-level:nth-child(3) { animation: wow-offer-card-3 4.5s linear infinite; }
+
+[data-wow-scene="offers"][data-wow-state="active"] .offer-level {
+  animation: none !important;
+}
+
+@keyframes wow-offer-card-1 {
+  0%, 4%, 34%, 100% { transform: none; }
+  7%, 30% { transform: translateY(-2px) scale(1.008); }
+  18% { transform: translateY(-6px) scale(1.022); box-shadow: inset 0 0 0 2px rgba(232, 184, 63, .62), 0 16px 40px rgba(0, 0, 0, .28); }
+}
+
+@keyframes wow-offer-card-2 {
+  0%, 31%, 63%, 100% { transform: none; }
+  34%, 59% { transform: translateY(-2px) scale(1.008); }
+  47% { transform: translateY(-6px) scale(1.022); box-shadow: inset 0 0 0 2px rgba(232, 184, 63, .62), 0 16px 40px rgba(0, 0, 0, .28); }
+}
+
+@keyframes wow-offer-card-3 {
+  0%, 60%, 92%, 100% { transform: none; }
+  63%, 88% { transform: translateY(-2px) scale(1.008); }
+  76% { transform: translateY(-6px) scale(1.022); box-shadow: inset 0 0 0 2px rgba(232, 184, 63, .62), 0 16px 40px rgba(0, 0, 0, .28); }
+}
+
+.wow-grid-ripple {
+  position: absolute;
+  z-index: 4;
+  inline-size: 9px;
+  block-size: 9px;
+  border: 1px solid rgba(247, 200, 66, .9);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-wow-scene="scenarios"] .wow-grid-ripple { inset-block-start: 12px; }
+[data-wow-scene="offers"] .wow-grid-ripple { inset-block-start: -30px; }
+.wow-grid-ripple-1 { inset-inline-start: calc(16.667% - 4px); }
+.wow-grid-ripple-2 { inset-inline-start: calc(50% - 4px); }
+.wow-grid-ripple-3 { inset-inline-start: calc(83.333% - 4px); }
+
+[data-wow-scene="scenarios"][data-wow-state="active"] .wow-grid-ripple-1 { animation: wow-grid-ripple-1 var(--wow-scenarios-duration, 3.3s) linear 1 both; }
+[data-wow-scene="scenarios"][data-wow-state="active"] .wow-grid-ripple-2 { animation: wow-grid-ripple-2 var(--wow-scenarios-duration, 3.3s) linear 1 both; }
+[data-wow-scene="scenarios"][data-wow-state="active"] .wow-grid-ripple-3 { animation: wow-grid-ripple-3 var(--wow-scenarios-duration, 3.3s) linear 1 both; }
+
+@keyframes wow-grid-touch-ripple {
+  0% { opacity: 0; transform: scale(.45); box-shadow: 0 0 0 0 rgba(247, 200, 66, .34); }
+  3% { opacity: .95; transform: scale(1); }
+  10% { opacity: 0; transform: scale(3.4); box-shadow: 0 0 0 7px rgba(247, 200, 66, 0); }
+  11%, 100% { opacity: 0; transform: scale(3.4); }
+}
+
+@keyframes wow-grid-ripple-1 {
+  0%, 13%, 25%, 100% { opacity: 0; transform: scale(.45); }
+  18% { opacity: .95; transform: scale(1); box-shadow: 0 0 0 2px rgba(247, 200, 66, .24); }
+  24% { opacity: 0; transform: scale(3.4); box-shadow: 0 0 0 7px rgba(247, 200, 66, 0); }
+}
+
+@keyframes wow-grid-ripple-2 {
+  0%, 45%, 57%, 100% { opacity: 0; transform: scale(.45); }
+  50% { opacity: .95; transform: scale(1); box-shadow: 0 0 0 2px rgba(247, 200, 66, .24); }
+  56% { opacity: 0; transform: scale(3.4); box-shadow: 0 0 0 7px rgba(247, 200, 66, 0); }
+}
+
+@keyframes wow-grid-ripple-3 {
+  0%, 77%, 89%, 100% { opacity: 0; transform: scale(.45); }
+  82% { opacity: .95; transform: scale(1); box-shadow: 0 0 0 2px rgba(247, 200, 66, .24); }
+  88% { opacity: 0; transform: scale(3.4); box-shadow: 0 0 0 7px rgba(247, 200, 66, 0); }
+}
+
+/* One compact signal dot language across every ray. */
+.wow-hero-route::after,
+[data-wow-scene="process"]::after,
+[data-wow-scene="scenarios"] .scenario-grid::after,
+[data-wow-scene="offers"] .offer-levels::after {
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: #f7c842;
+  box-shadow: 0 0 7px rgba(247, 200, 66, .96), 0 0 16px rgba(232, 184, 63, .52);
+}
+
+.wow-ready [data-wow-scene="mechanism"] .mechanism-grid::after {
+  inline-size: 10px;
+  block-size: 10px;
+  border-radius: 50%;
+  background: #ffd34d;
+  box-shadow: 0 0 10px rgba(247, 200, 66, 1), 0 0 24px rgba(232, 184, 63, .7);
+}
+
+.wow-hero-route::after { inset-block-start: -4px; }
+[data-wow-scene="scenarios"] .scenario-grid::after { inset-block-start: 12px; }
+
+/* Footer closes the route with a restrained final pass and a pulse at the mark. */
+[data-wow-scene="footer"] {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-image: radial-gradient(circle at 7% 50%, rgba(232, 184, 63, .1), transparent 24%);
+}
+
+[data-wow-scene="footer"]::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0 0 auto;
+  border-top: 1px solid rgba(232, 184, 63, .48);
+  box-shadow: 0 0 10px rgba(232, 184, 63, .2);
+  pointer-events: none;
+}
+
+[data-wow-scene="footer"]::after {
+  content: '';
+  position: absolute;
+  inset: -4px auto auto 0;
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 50%;
+  background: #f7c842;
+  box-shadow: 0 0 7px rgba(247, 200, 66, .96), 0 0 16px rgba(232, 184, 63, .52);
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-wow-scene="footer"][data-wow-state="active"]::after {
+  animation: wow-footer-pass var(--wow-footer-duration, 4.6s) linear 1 both;
+}
+
+[data-wow-scene="footer"][data-wow-state="active"] .brand-logo {
+  animation: wow-footer-mark var(--wow-footer-duration, 4.6s) ease-out 1 both;
+}
+
+@keyframes wow-footer-pass {
+  0% { opacity: 0; transform: translateX(0); }
+  7% { opacity: 1; }
+  82% { opacity: 1; transform: translateX(calc(100vw - 9px)); }
+  92%, 100% { opacity: 0; transform: translateX(calc(100vw - 9px)); }
+}
+
+@keyframes wow-footer-mark {
+  0%, 100% { filter: drop-shadow(0 0 0 rgba(232, 184, 63, 0)); transform: scale(1); }
+  8% { filter: drop-shadow(0 0 9px rgba(232, 184, 63, .82)); transform: scale(1.08); }
+  18% { filter: drop-shadow(0 0 3px rgba(232, 184, 63, .28)); transform: scale(1); }
+}
+
+[data-wow-scene="fit"] .fit-row {
+  position: relative;
+}
+
+[data-wow-scene="fit"] .fit-row::before {
+  content: '';
+  position: absolute;
+  inset: 8px auto 8px 48px;
+  border-left: 2px solid rgba(232, 184, 63, .7);
+  opacity: 0;
+  transform: scaleY(0);
+  transform-origin: top center;
+  transition: opacity 320ms ease-out, transform 560ms cubic-bezier(.22, .61, .36, 1);
+}
+
+[data-wow-scene="fit"][data-wow-state="active"] .fit-row {
+  box-shadow: none;
+}
+
+[data-wow-scene="fit"][data-wow-state="ready"] .fit-row::before,
+[data-wow-scene="fit"][data-wow-state="active"] .fit-row::before {
+  opacity: .72;
+  transform: scaleY(1);
+}
+
+@media (max-width: 900px) {
+  [data-wow-scene="diagnostic"] .diagnostic-layout::before,
+  [data-wow-scene="offers"] .offer-levels::before,
+  [data-wow-scene="offers"] .offer-levels::after,
+  [data-wow-scene="offers"] .wow-grid-ripple { display: none; }
+}
+
+@media (max-width: 560px) {
+  [data-wow-scene="fit"] .fit-row::before {
+    inset-inline-start: 38px;
+  }
+
+  .wow-hero-route { inset: 62% 15% auto 45%; }
+  .wow-hero-node-a { inset: calc(62% - 7px) auto auto 58%; }
+  .wow-hero-node-b { inset: calc(62% - 7px) auto auto 75%; }
+  .wow-hero-node-c { inset: calc(62% - 7px) 14.5% auto auto; }
+
+  .wow-grid-ripple,
+  [data-wow-scene="footer"]::after { display: none; }
+
+  [data-wow-scene="mechanism"] .mechanism-card {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-wow-scene="hero"] .wow-hero-node,
+  [data-wow-scene="scenarios"] .scenario-card,
+  [data-wow-scene="offers"] .offer-level,
+  [data-wow-scene="offers"] .offer-levels::after,
+  .wow-grid-ripple,
+  [data-wow-scene="footer"]::after,
+  [data-wow-scene="footer"] .brand-logo,
+  [data-wow-scene="fit"] .fit-row::before,
+  [data-wow-scene="diagnostic"] .diagnostic-layout::before {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+html[data-wow-stopped="true"] [data-wow-scene="scenarios"] .scenario-card,
+html[data-wow-stopped="true"] [data-wow-scene="scenarios"] .scenario-grid::after,
+html[data-wow-stopped="true"] [data-wow-scene="offers"] .offer-level,
+html[data-wow-stopped="true"] [data-wow-scene="offers"] .offer-levels::after,
+html[data-wow-stopped="true"] .wow-grid-ripple,
+html[data-wow-stopped="true"] [data-wow-scene="footer"]::after,
+html[data-wow-stopped="true"] [data-wow-scene="footer"] .brand-logo {
+  animation: none !important;
+}
