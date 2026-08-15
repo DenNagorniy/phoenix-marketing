@@ -211,3 +211,16 @@ button{font:inherit}.header-cta,.button,.proof-item,.js-open-demo{cursor:pointer
 @media(max-width:900px){.faq{grid-template-columns:1fr;gap:48px}.faq-intro{position:static}.faq .section-note{max-width:560px}}
 @media(max-width:560px){.faq{gap:36px}.faq-item summary{grid-template-columns:28px minmax(0,1fr) 20px;gap:10px;min-height:78px;padding:17px 0}.faq-item summary span{margin-top:5px}.faq-item summary strong{font-size:21px}.faq-answer{padding:0 0 24px 38px}.faq-answer p{font-size:15px;line-height:1.62}}
 @media(prefers-reduced-motion:reduce){.faq-item summary i::before,.faq-item summary i::after{transition:none}}
+
+/* Live layout repair: promote section backgrounds and borders to their true full-width owners. */
+.contact-details{max-width:none;width:100%;margin:0;padding-inline:max(5vw,calc((100vw - 1240px)/2 + 62px))}
+.site-footer{max-width:none;width:100%;margin:0;padding-inline:max(5vw,calc((100vw - 1440px)/2 + 72px))}
+
+/* Keep the Telegram handle and its directional mark as one readable unit. */
+.contact-column>a{gap:8px;flex-wrap:nowrap}
+.contact-column>a .contact-link-value{font:inherit;font-weight:400;letter-spacing:normal;text-transform:none;color:inherit;white-space:nowrap}
+.contact-link-value i{font-style:normal;color:var(--copper);margin-left:3px}
+
+/* The long Russian display word needs the full row before it approaches the FAQ list. */
+@media(max-width:1399px){.faq{grid-template-columns:1fr;gap:48px}.faq-intro{position:static}.faq h2{max-width:820px;font-size:clamp(52px,7vw,76px)}.faq .section-note{max-width:560px}}
+@media(max-width:560px){.contact-details,.site-footer{padding-inline:20px}.faq h2{font-size:clamp(42px,12vw,64px)}}
